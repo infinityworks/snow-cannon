@@ -66,12 +66,12 @@ Change into the directory of the resource type you want to create. For example, 
 Then
 
 
-    terraform init -backend=true -backend-config=environments/<env>/backend-config.tfvars
-    terraform plan -var-file=environments/<env>/environment.tfvars
+    terraform init
+    terraform plan
 
 If you're happy with the output
 
-    terraform apply -var-file=environments/<env>/environment.tfvars
+    terraform apply
 
 
 Then tidy up after yourself:

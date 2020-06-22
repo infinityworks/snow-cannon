@@ -20,5 +20,6 @@ resource "snowflake_role_grants" "grants_on_role_DATA_ANALYST" {
 
   users = [
     "${snowflake_user.user_ANALYST.name}",
+
   ]
 }
