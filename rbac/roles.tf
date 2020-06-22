@@ -23,3 +23,11 @@ resource "snowflake_role_grants" "grants_on_role_DATA_ANALYST" {
 
   ]
 }
+
+output "BI_ref" {
+  value = "${snowflake_role.role_BI_ANALYST.name}"
+}
+
+output "DA_ref" {
+  value = "${snowflake_role.role_BI_ANALYST.name}"
+}
