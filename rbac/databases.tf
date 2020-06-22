@@ -5,7 +5,7 @@ resource "snowflake_database" "db_ANALYTICS_TEST" {
   data_retention_time_in_days = 14
 }
 
-resource "snowflake_database_grant" "grants_on_db_ANALYTICS_TEST" {
+resource "snowflake_database_grant" "usage_grants_on_db_ANALYTICS_TEST" {
   provider      = snowflake.systems
   database_name = snowflake_database.db_ANALYTICS_TEST.name
   privilege     = "USAGE"
@@ -17,7 +17,7 @@ resource "snowflake_database_grant" "grants_on_db_ANALYTICS_TEST" {
 
 }
 
-resource "snowflake_database_grant" "grants_on_db_ANALYTICS_TEST2" {
+resource "snowflake_database_grant" "modify_grants_on_db_ANALYTICS_TEST" {
   provider      = snowflake.systems
   database_name = snowflake_database.db_ANALYTICS_TEST.name
   privilege     = "MODIFY"
