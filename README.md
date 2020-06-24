@@ -65,7 +65,6 @@ Change into the directory of the resource type you want to create. For example, 
 
 Then
 
-
     terraform init
     terraform plan
 
@@ -76,5 +75,21 @@ If you're happy with the output
 
 Then tidy up after yourself:
 
+
+    rm -rf .terraform
+
+
+## Creating the data lake
+
+To create the data lake, change into the `/aws` directory and execute:
+
+    terraform init -backend=true -backend-config=backend-config.tfvars
+    terraform plan -var-file=environment.tfvars
+
+If all is well and the expected resources are available, run:
+
+    terraform apply -var-file=environment.tfvars
+
+After you've finished terraforming, remove the `.terraform` directory and its contents.
 
     rm -rf .terraform
