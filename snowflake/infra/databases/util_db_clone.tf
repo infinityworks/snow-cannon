@@ -10,8 +10,8 @@ resource "snowflake_database_grant" "usage_grants_on_db_UTIL_CLONE" {
   privilege     = "USAGE"
 
   roles = [
-    module.rbac.role_BI_ANALYST,
-    module.rbac.role_DATA_ANALYST,
+    var.role_BI_ANALYST,
+    var.role_DATA_ANALYST,
   ]
 
 }
@@ -21,8 +21,8 @@ resource "snowflake_database_grant" "modify_grants_on_db_UTIL_CLONE" {
   privilege     = "MODIFY"
 
   roles = [
-    module.rbac.role_BI_ANALYST,
-    module.rbac.role_DATA_ANALYST,
+    var.role_BI_ANALYST,
+    var.role_DATA_ANALYST,
   ]
 
 }
