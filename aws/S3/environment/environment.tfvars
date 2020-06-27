@@ -1,1 +1,2 @@
-project = "sub-zero"
+project          = "sub-zero"
+data_lake_suffix = "data-lake"
