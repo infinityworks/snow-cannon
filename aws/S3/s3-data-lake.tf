@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "data-lake" {
-  bucket = "${var.project}-data-lake"
+  bucket = "${var.project}-${var.data_lake_suffix}"
   acl    = "private"
   versioning {
     enabled = true
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "data-lake" {
   }
 
   tags = {
-    Name        = "${var.project}-data-lake"
+    Name        = "${var.project}-${var.data_lake_suffix}"
     Description = "Remote state bucket"
     Owner       = "adam.dewberry"
   }
