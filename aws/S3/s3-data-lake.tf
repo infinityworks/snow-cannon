@@ -25,3 +25,12 @@ resource "aws_s3_bucket_public_access_block" "block_public_access_to_data-lake" 
   block_public_acls   = true
   block_public_policy = true
 }
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.data-lake.id
+
+  queue {
+    queue_arn = "arn:aws:sqs:eu-west-2:484008610938:sf-snowpipe-AIDAXBMJJJR5KTEGSWNOV-y8A6GwQhYvKB-xml8xWuZA"
+    events    = ["s3:ObjectCreated:*"]
+  }
+}
