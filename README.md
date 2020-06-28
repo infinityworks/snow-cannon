@@ -88,6 +88,7 @@ The deployment order is as follows:
 1. Schemas
 1. Integrations
 1. External Stages
+1. Add Snowflake External ID to AWS IAM role
 1. Pipes
 
 
