@@ -79,6 +79,18 @@ Then tidy up after yourself:
     rm -rf .terraform
 
 
+# Deploying this project
+
+Some resources are dependent on others already existing, thus we must deploy the resources in a specific order. They have not been linked through modules and outputs as this causes deployment and destruction conflicts; for example, a non-existing database would be created if a schema linked to it was created first, this would mean the state information for the database is in the schema state file and we cannot independently modify the database - therefore they are referred to as variables since snowflake looks for existence of names, not IDs.
+
+The deployment order is as follows:
+1. Databases
+1. Schemas
+1. Integrations
+1. External Stages
+1. Pipes
+
+
 ## Creating the data lake
 
 To create the data lake, change into the `/aws` directory and execute:

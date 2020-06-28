@@ -1,9 +1,3 @@
-variable "region" {
-  type        = string
-  description = "AWS Region"
-  default     = "eu-west-2"
-}
-
 variable "project" {
   type        = string
   description = "The project to which the resource belongs"
@@ -27,14 +21,4 @@ variable "role_BI_ANALYST" {
 variable "role_DATA_ANALYST" {
   type        = string
   description = "Name for the role: DATA_ANALYST"
-}
-
-variable "database_analytics" {
-  type        = string
-  description = "Name for the database: database_analytics"
-}
-
-variable "schema_db_analytics_marketing" {
-  type        = string
-  description = "Name for the schema: Analytics/Marketing"
 }
