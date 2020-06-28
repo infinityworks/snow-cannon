@@ -20,11 +20,3 @@ resource "snowflake_role_grants" "grants_on_role_DATA_ANALYST" {
 
   ]
 }
-
-output "role_BI_ANALYST" {
-  value = snowflake_role.BI_ANALYST.name
-}
-
-output "role_DATA_ANALYST" {
-  value = snowflake_role.DATA_ANALYST.name
-}
