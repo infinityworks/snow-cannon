@@ -9,9 +9,9 @@ variable "project" {
   description = "The project to which the resource belongs"
 }
 
-variable "data_lake_suffix" {
+variable "data_lake_bucket" {
   type        = string
-  description = "S3 data lake bucket name suffix"
+  description = "S3 data lake bucket name"
 }
 
 variable "snowpipe_queue_arn" {
