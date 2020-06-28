@@ -6,7 +6,7 @@ terraform {
 }
 
 provider "snowflake" {
-  account = "infinityworkspartner"
+  account = "aq70698"
   region  = "eu-west-1"
   role    = "SYSADMIN"
 }
