@@ -1,9 +1,8 @@
-resource "aws_s3_bucket" "data-lake" {
-  bucket = var.data_lake_bucket
-  acl    = "private"
-  versioning {
-    enabled = true
-  }
+resource "aws_s3_bucket" "data_lake" {
+  bucket        = var.data_lake_bucket
+  force_destroy = true
+  acl           = "private"
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -19,18 +18,9 @@ resource "aws_s3_bucket" "data-lake" {
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "block_public_access_to_data-lake" {
-  bucket = aws_s3_bucket.data-lake.id
+resource "aws_s3_bucket_public_access_block" "block_public_access_to_data_lake" {
+  bucket = aws_s3_bucket.data_lake.id
 
   block_public_acls   = true
   block_public_policy = true
-}
-
-resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = aws_s3_bucket.data-lake.id
-
-  queue {
-    queue_arn = var.snowpipe_queue_arn
-    events    = ["s3:ObjectCreated:*"]
-  }
 }

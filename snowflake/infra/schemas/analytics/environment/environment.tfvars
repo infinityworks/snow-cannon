@@ -1,5 +1,5 @@
-project                       = "sub-zero"
-s3_data_lake                  = "s3://sub-zero-data-lake"
+project                       = "snow-cannon"
+s3_data_lake                  = "s3://snow-cannon-data-lake"
 user_ANALYST                  = "ANALYST"
 role_BI_ANALYST               = "BI_ANALYST"
 role_DATA_ANALYST             = "DATA_ANALYST"
