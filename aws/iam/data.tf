@@ -1,7 +1,7 @@
 data "terraform_remote_state" "data_lake" {
   backend = "s3"
   config = {
-    bucket = "sub-zero-remote-state"
+    bucket = "snow-cannon-remote-state"
     key    = "persistence/s3/terraform.tfstate"
     region = "eu-west-2"
   }
