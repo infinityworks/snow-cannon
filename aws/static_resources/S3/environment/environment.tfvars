@@ -1,1 +1,1 @@
-project = "sub-zero"
+project = "snow-cannon"

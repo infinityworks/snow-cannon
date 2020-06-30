@@ -9,11 +9,6 @@ variable "project" {
   description = "The project to which the resource belongs"
 }
 
-variable "data_lake_suffix" {
-  type        = string
-  description = "S3 data lake bucket name suffix"
-}
-
 variable "is_live" {
   type        = bool
   description = "boolean that shows if a resource is live i.e. being used in production. For budgetting purposes."
