@@ -1,5 +1,5 @@
-bucket         = "sub-zero-remote-state"
+bucket         = "snow-cannon-remote-state"
 key            = "snowflake/stages/terraform.tfstate"
 region         = "eu-west-2"
-dynamodb_table = "sub-zero-lock-table"
+dynamodb_table = "snow-cannon-lock-table"
 encrypt        = true
