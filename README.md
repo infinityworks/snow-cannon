@@ -74,7 +74,7 @@ Remember to execute this `eval` statement for each terminal window you are worki
 ## Remote state and lock table
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.
 
-The remote stage bucket and lock table's name are comprised of your project name, this can be updated in `./aws/static_resources/S3/environment/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/static_resources/S3` and execute:
+The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/S3/environment/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/S3` and execute:
 
     terraform init
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
