@@ -119,6 +119,7 @@ Try creating a warehouse.
 ## Creating Snowpipes
 Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. The following summaries the steps, though the specifics which follow must be observed.
 - First we must create a database and schema where an external stage can live.
+- If it does not already exist, create the table which you want to ingest data into.
 - Next we require an account integration to connect to an external AWS account.
 - Once this has been established we can create the external stage, which is dependent on the account integration.
 - If you do not have an existing S3 bucket / data lake to connect to, you must create this from the `./aws/S3/` directory, along with its associated IAM role in `./aws/iam/`.
@@ -137,7 +138,7 @@ Snowpipe requires a target table to store data in, the simplest way to create th
 
     USE DATABASE <target-database>;
     USE SCHEMA <target-schema>;
-    CREATE OR REPLACE TABLE <table-name> (<DDL STATEMENT>);
+    CREATE TABLE IF NOT EXISTS <table-name> (<DDL STATEMENT>);
 
 Before we create the pipe, an S3 bucket and IAM role are required, these are the parameters defined in the integration. If the AWS resources do not exist, you can now create them. We cannot yet set the `bucket_notification` as we do not have the SQS ARN and so do not include this resource block when deploying.
 
@@ -148,7 +149,7 @@ Before we create the pipe, an S3 bucket and IAM role are required, these are the
 
 Note that the object-creation event has not been configured, we require a parameter from the pipe in order to do this.
 
-In Snowflake run `DESC PIPE <PIPE-NAME>;` and copy the entire `notification_channel` output; this arn should then be included for the key `snowpipe_queue_arn` in `aws/S3/environment/environment.tfvars`; re-run the terraform:
+In Snowflake, run `DESC PIPE <PIPE-NAME>;` and copy the entire `notification_channel` output; this arn should then be included for the key `snowpipe_queue_arn` in `aws/S3/environment/environment.tfvars`; re-run the terraform:
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
