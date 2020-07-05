@@ -9,12 +9,12 @@ resource "aws_iam_role" "storage_integration_iam_role" {
       "Sid": "",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "${var.snowflake_storage_integration_role_arn}"
+        "AWS": "${data.terraform_remote_state.snowflake_integration.outputs.storage_integration_snowflake_arn}"
       },
       "Action": "sts:AssumeRole",
       "Condition": {
         "StringEquals": {
-          "sts:ExternalId": "${var.snowflake_external_id}"
+          "sts:ExternalId": "${data.terraform_remote_state.snowflake_integration.outputs.storage_integration_external_id}"
         }
       }
     }

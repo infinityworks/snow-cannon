@@ -1,4 +1,4 @@
-resource "snowflake_storage_integration" "snowflake_storage_integration" {
+resource "snowflake_storage_integration" "data_lake_storage_integration" {
   name                      = "S3_DATA_LAKE_STORAGE_INTEGRATION"
   type                      = "EXTERNAL_STAGE"
   storage_provider          = "S3"
