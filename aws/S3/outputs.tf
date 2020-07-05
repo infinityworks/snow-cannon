@@ -1,4 +1,4 @@
-output "data_lake_curated_id" {
+output "data_lake_id" {
   value = aws_s3_bucket.data_lake.id
 }
 
