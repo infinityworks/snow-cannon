@@ -1,6 +1,7 @@
-variable "database_analytics" {
+variable "region" {
   type        = string
-  description = "Name for the database: database_analytics"
+  description = "AWS Region"
+  default     = "eu-west-2"
 }
 
 variable "snowpipe_table" {

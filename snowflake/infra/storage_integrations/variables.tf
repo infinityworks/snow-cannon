@@ -1,8 +1,3 @@
-variable "project" {
-  type        = string
-  description = "The project to which the resource belongs"
-}
-
 variable "external_AWS_account_id" {
   type        = string
   description = "The account ID of the external AWS account you wish to connect to"
