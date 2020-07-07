@@ -1,5 +1,5 @@
 resource "aws_iam_role" "storage_integration_iam_role" {
-  name = "${var.project}-storage-integration-role"
+  name = data.terraform_remote_state.snowflake_integration.outputs.storage_integration_IAM_name
 
   assume_role_policy = <<EOF
 {
@@ -23,7 +23,6 @@ resource "aws_iam_role" "storage_integration_iam_role" {
 EOF
 
   tags = {
-    Name  = "${var.project}-storage-integration-role"
     Owner = "adam.dewberry"
     Live  = var.is_live
   }
@@ -57,7 +56,7 @@ data "aws_iam_policy_document" "storage_integration_policy_document" {
 }
 
 resource "aws_iam_policy" "storage_integration_policy" {
-  name   = "${var.project}-storage-integration-policy"
+  name   = "${data.terraform_remote_state.data_lake.outputs.project_name}-storage-integration-policy"
   policy = data.aws_iam_policy_document.storage_integration_policy_document.json
 }
 

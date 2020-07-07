@@ -13,8 +13,3 @@ variable "data_lake_bucket" {
   type        = string
   description = "S3 data lake bucket name"
 }
-
-variable "snowpipe_queue_arn" {
-  type        = string
-  description = "Snowpipe SQS arn used to push event notifications to"
-}
