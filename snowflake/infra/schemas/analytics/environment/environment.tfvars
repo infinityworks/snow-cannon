@@ -1,7 +1,0 @@
-project                       = "snow-cannon"
-s3_data_lake                  = "s3://snow-cannon-data-lake"
-user_ANALYST                  = "ANALYST"
-role_BI_ANALYST               = "BI_ANALYST"
-role_DATA_ANALYST             = "DATA_ANALYST"
-database_analytics            = "ANALYTICS"
-schema_db_analytics_marketing = "Marketing"

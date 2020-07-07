@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "data_lake" {
   }
 
   tags = {
-    Name        = var.data_lake_bucket
+    Project     = var.project
     Description = "Remote state bucket"
     Owner       = "adam.dewberry"
   }
