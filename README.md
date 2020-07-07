@@ -25,8 +25,8 @@ Making use of Snowflake's default and recommended roles, this project creates th
 ## Dependencies
 In order to contribute or run this project, you will need:
 
-- [terraform v0.12](https://www.terraform.io/)
-- [terraform-provider-snowflake](https://github.com/chanzuckerberg/terraform-provider-snowflake)
+- [terraform v0.12.28](https://www.terraform.io/)
+- [terraform-provider-snowflake v0.13](https://github.com/chanzuckerberg/terraform-provider-snowflake)
 - [AWS Command Line Interface](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
@@ -118,19 +118,33 @@ Try creating a warehouse.
 
 ## Creating Snowpipes
 Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. The following summaries the steps, though the specifics which follow must be observed.
-- First we must create a database and schema where an external stage can live.
-- If it does not already exist, create the table which you want to ingest data into.
+- First deploy the data lake bucket in `./aws/S3/`.
+- Next we must create a database and schema where an external stage can live.
+- If it does not already exist, create the landing table where data will be ingested into.
 - Next we require an account integration to connect to an external AWS account.
-- Once this has been established we can create the external stage, which is dependent on the account integration.
-- If you do not have an existing S3 bucket / data lake to connect to, you must create this from the `./aws/S3/` directory, along with its associated IAM role in `./aws/iam/`.
-- Now you can create the Snowpipe.
-- The new pipe's SQS ARN is used in configuring the S3 event notifications, at which point we can begin ingesting data.
+- Once this has been established we can create the external stage, which is dependent on the account integration and S3 data lake bucket.
+- Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 data lake, this is located in `./aws/iam/`.
+- Finally, create the Snowpipe. The pipe's SQS ARN is immediately used to configure the S3 event notifications; as files land in the bucket they will be consumed and data copied to the landing table.
 
 
 ### The Specifics
-Resources that depend on the existence of others have been included as variables within each `environment/environment.tfvars` file. Currently these values can be seen as _hard coded_ but are consistent across each file and are easy to modify and update.
+First name your project, this name will comprise the data lake bucket name and will persist in infra naming throughout. You will find this in `aws/s3/environment/environment.tfvars`.
 
-Once a database and schema has been created, in order to create a cloud account integration you must change the variables in `snowflake/infra/storage_integrations/environment/environment.tfvars`, this includes your AWS cloud ID and the S3 IAM role associated with the bucket you wish to connect a pipe to. Note that these parameters are referenced by name and not ID, meaning they can be set in Snowflake before their existence in AWS, providing you are certain of the IAM role name.
+Next create the data lake from which we will consume `.csv` files; navigate to `./aws/S3/` and run:
+
+    terraform init -backend=true -backend-config=environment/backend-config.tfvars
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform apply tfplan
+    rm -r .terraform && rm tfplan
+
+Following this create the users, roles, databases and schemas by navigating to each respective directory and again running:
+
+    terraform init -backend=true -backend-config=environment/backend-config.tfvars
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform apply tfplan
+    rm -r .terraform && rm tfplan
+
+Once a database and schema has been created, in order to create a cloud account integration you must change the variables in `snowflake/infra/storage_integrations/environment/environment.tfvars`, this includes your AWS cloud ID and the S3 IAM role name associated with the bucket you wish to connect a pipe to; the IAM name is set here and will persist to the IAM resources when they are deployed in later steps. Note that these parameters are referenced by name and not ID, meaning they can be set in Snowflake before their existence in AWS, providing you are certain of their naming availability. Set these variables and deploy the integration.
 
 Next create the external stage which depends on this integration.
 
@@ -140,26 +154,17 @@ Snowpipe requires a target table to store data in, the simplest way to create th
     USE SCHEMA <target-schema>;
     CREATE TABLE IF NOT EXISTS <table-name> (<DDL STATEMENT>);
 
-Before we create the pipe, an S3 bucket and IAM role are required, these are the parameters defined in the integration. If the AWS resources do not exist, you can now create them. We cannot yet set the `bucket_notification` as we do not have the SQS ARN and so do not include this resource block when deploying.
-
-    terraform init -backend=true -backend-config=environment/backend-config.tfvars
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
-    terraform apply tfplan
-    rm -r .terraform
-
-Note that the object-creation event has not been configured, we require a parameter from the pipe in order to do this.
-
-In Snowflake, run `DESC PIPE <PIPE-NAME>;` and copy the entire `notification_channel` output; this arn should then be included for the key `snowpipe_queue_arn` in `aws/S3/environment/environment.tfvars`; re-run the terraform:
+Finally create the pipe by navigating to `snowflake/infra/pipes/`and run
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 
-Your pipe should now be configured and you can check its status with:
+This will also configure the event notifications on the S3 data lake bucket. Your pipe should now be visible and you can check its status with:
 
     SELECT system$pipe_status('"ANALYTICS"."PUBLIC"."DATA_LAKE_PIPE"');
 
 As you load files into the S3 bucket, these will now be consumed into the snowflake table.
 
-Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; the steps on creating a Snowpipe will need to be repeated.
+Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; the proceeding steps including stage, IAM and pipe creation will need to be repeated.
