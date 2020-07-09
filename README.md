@@ -74,7 +74,7 @@ Remember to execute this `eval` statement for each terminal window you are worki
 ## Remote state and lock table
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.
 
-The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/S3/environment/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/S3` and execute:
+The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/s3` and execute:
 
     terraform init
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
@@ -94,7 +94,7 @@ Check with the CLI that `<your-project>-lock-table` now exists.
 Now we have our state infrastructure we can begin Terraforming Snowflake and its AWS counterparts.
 
 ## Provisioning Snowflake resources
-Some resources are dependent on others already existing, for example schemas belong to databases, and stages belong to a schema within a database; thus we must deploy resources in a specific order. They have not been linked through modules and outputs as this causes deployment and destruction conflicts; for example, a non-existing database would be created if a schema linked to it was created first, this would mean the state information for the database is in the schema state file and we cannot independently modify said database - therefore they are referred to as variables since snowflake appears to look for existence of names, not IDs. With this knowledge we must respect a deployment order:
+Some resources are dependent on others already existing, for example schemas belong to databases, and stages belong to a schema within a database; thus we must deploy resources in a specific order. They have not been linked through modules and outputs as this causes deployment and destruction conflicts; for example, a non-existing database would be created if a schema linked to it was created first, this would mean the state information for the database is in the schema state file and we cannot independently modify said database - therefore they are referred to using the remote state output and snowflake appears to look for existence of names, not IDs. With this knowledge we must respect a deployment order:
 
 1. RBAC
 1. Databases
@@ -118,19 +118,19 @@ Try creating a warehouse.
 
 ## Creating Snowpipes
 Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. The following summaries the steps, though the specifics which follow must be observed.
-- First deploy the data lake bucket in `./aws/S3/`.
+- First deploy the data lake bucket in `./aws/s3/`.
 - Next we must create a database and schema where an external stage can live.
 - If it does not already exist, create the landing table where data will be ingested into.
 - Next we require an account integration to connect to an external AWS account.
 - Once this has been established we can create the external stage, which is dependent on the account integration and S3 data lake bucket.
 - Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 data lake, this is located in `./aws/iam/`.
-- Finally, create the Snowpipe. The pipe's SQS ARN is immediately used to configure the S3 event notifications; as files land in the bucket they will be consumed and data copied to the landing table.
+- Finally, create the Snowpipe. The pipe's SQS ARN is immediately used to configure the S3 event notifications. As files land in the bucket they will be consumed and data copied to the landing table.
 
 
 ### The Specifics
 First name your project, this name will comprise the data lake bucket name and will persist in infra naming throughout. You will find this in `aws/s3/environment/environment.tfvars`.
 
-Next create the data lake from which we will consume `.csv` files; navigate to `./aws/S3/` and run:
+Next create the data lake from which we will consume `.csv` files; navigate to `./aws/s3/` and run:
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
@@ -144,15 +144,15 @@ Following this create the users, roles, databases and schemas by navigating to e
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 
-Once a database and schema has been created, in order to create a cloud account integration you must change the variables in `snowflake/infra/storage_integrations/environment/environment.tfvars`, this includes your AWS cloud ID and the S3 IAM role name associated with the bucket you wish to connect a pipe to; the IAM name is set here and will persist to the IAM resources when they are deployed in later steps. Note that these parameters are referenced by name and not ID, meaning they can be set in Snowflake before their existence in AWS, providing you are certain of their naming availability. Set these variables and deploy the integration.
-
-Next create the external stage which depends on this integration.
-
 Snowpipe requires a target table to store data in, the simplest way to create this is in the console as follows:
 
     USE DATABASE <target-database>;
     USE SCHEMA <target-schema>;
     CREATE TABLE IF NOT EXISTS <table-name> (<DDL STATEMENT>);
+
+To connect your external AWS account you must create a cloud account integration; to do this begin by changing the variables in `snowflake/infra/storage_integrations/environment/environment.tfvars`, this includes your AWS cloud ID and the S3 IAM role name associated with the bucket you wish to connect a pipe to. The IAM name is set here and will persist to the IAM resources when they are deployed in later steps; note that these parameters are referenced by name and not ID, meaning they can be set in Snowflake before their existence in AWS, providing you are certain of the name availability. Set these variables and deploy the integration.
+
+Next create the external stage which depends on this integration.
 
 Finally create the pipe by navigating to `snowflake/infra/pipes/`and run
 
