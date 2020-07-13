@@ -79,7 +79,7 @@ The remote state bucket and lock table's name are comprised of your project name
     terraform init
     terraform plan -var-file=environment/environment.tfvars -out=tfplan  
     terraform apply tfplan
-    rm -r .terraform && rm tfplan   
+    rm tfplan   
 
 This will create a remote state bucket with the name `<your-project>-remote-state`. Next for the lock table, again changing the `environment.tfvars` project name:
 
