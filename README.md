@@ -63,6 +63,13 @@ for example:
 
     echo "SNOWFLAKE_USER=USER1\nSNOWFLAKE_PASSWORD=TheresNeverTooMuchData" > ~/.snowflake/credentials
 
+The file's contents should look like the following:
+
+    SNOWFLAKE_USER=USER1
+    SNOWFLAKE_PASSWORD=TheresNeverTooMuchData
+
+Note: There should be no new line character after `SNOWFLAKE_PASSWORD`, or any white space.
+
 Once this file has been created, run the following to set your env vars:
 
     eval $(./credentials.sh)
