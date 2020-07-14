@@ -1,7 +1,7 @@
 resource "snowflake_database" "db_UTIL_CLONE" {
   name                        = "UTIL_CLONE"
   from_database               = "UTIL_DB"
-  comment                     = "ADEWERRY testing"
+  comment                     = "testing"
   data_retention_time_in_days = 14
 }
 
@@ -10,10 +10,9 @@ resource "snowflake_database_grant" "usage_grants_on_db_UTIL_CLONE" {
   privilege     = "USAGE"
 
   roles = [
-    var.role_BI_ANALYST,
-    var.role_DATA_ANALYST,
+    data.terraform_remote_state.role_info.outputs.BI_ANALYST_name,
+    data.terraform_remote_state.role_info.outputs.DATA_ANALYST_name,
   ]
-
 }
 
 resource "snowflake_database_grant" "modify_grants_on_db_UTIL_CLONE" {
@@ -21,8 +20,7 @@ resource "snowflake_database_grant" "modify_grants_on_db_UTIL_CLONE" {
   privilege     = "MODIFY"
 
   roles = [
-    var.role_BI_ANALYST,
-    var.role_DATA_ANALYST,
+    data.terraform_remote_state.role_info.outputs.BI_ANALYST_name,
+    data.terraform_remote_state.role_info.outputs.DATA_ANALYST_name,
   ]
-
 }
