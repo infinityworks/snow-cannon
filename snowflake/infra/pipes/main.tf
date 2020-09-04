@@ -1,19 +1,19 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13"
 
   backend "s3" {
   }
-}
 
-provider "aws" {
-  alias   = "aws"
-  region  = var.region
-  version = "~> 2.39"
+  required_providers {
+    snowflake = {
+      source  = "chanzuckerberg/snowflake"
+      version = "0.15.0"
+    }
+  }
 }
 
 provider "snowflake" {
-  alias   = "snowflake"
-  account = "aq70698"
+  account = "yr26953"
   region  = "eu-west-1"
   role    = "ACCOUNTADMIN"
 }
