@@ -26,15 +26,8 @@ Making use of Snowflake's default and recommended roles, this project creates th
 In order to contribute or run this project, you will need:
 
 - [terraform v0.12.28](https://www.terraform.io/)
-- [terraform-provider-snowflake v0.13](https://github.com/chanzuckerberg/terraform-provider-snowflake)
 - [AWS Command Line Interface](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
-
-
-## Installing Terraform Snowflake Provider
-The simplest way to install the third-party Snowflake provider is by executing the following command:
-
-    curl https://raw.githubusercontent.com/chanzuckerberg/terraform-provider-snowflake/master/download.sh |bash -s -- -b $HOME/.terraform.d/plugins
 
 ## Pre-commit Hooks
 
