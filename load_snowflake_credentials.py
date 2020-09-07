@@ -34,7 +34,7 @@ def get_snowflake_credentials(profile: str) -> configparser.SectionProxy:
         raise KeyError(
             f"Profile '{profile}' does not exist in snowsql config; check your profiles or default to 'connections'"
         )
-    
+
 
 def set_input_arguments() -> (str, str):
     parser = argparse.ArgumentParser()
