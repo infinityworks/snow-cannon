@@ -45,27 +45,38 @@ You may also optionally run these checks against all extant files in the project
 
 **Important note: if your code fails pre-commit checks, your commit will be cancelled. You'll need to fix the issues and commit again.**
 
+## Installing Snowsql
+The project uses the Snowsql CLI for resource creation where the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. Follow the download instructions [here](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
+
+    brew cask install snowflake-snowsql
+
+This will also create a config file in `~/.snowsql/config` used for authentication and setting default values such as role and warehouse.
+
+Edit the file and create a Snowflake profile (connections is the default profile), e.g:
+
+    [connections]
+    accountname = YourAccountId
+    region = eu-west-1
+    username = YourUserName
+    password = infinityworkspartner
+
+If you are using multiple Snowflake accounts you can create additional profiles in this file using the same structure:
+
+    [iw]
+    accountname = infinityworkspartner
+    region = eu-west-1
+    username = YourUserName
+    password = YourPassword
+
+
 ## Setting your ENV VARS
-This project depends on user authentication by environment variables; to simplify this process we will create a convenient file to load them.
+To deploy Snowflake using Terraform, this project depends on user authentication by environment variables; to simplify this process we load the snowsql config credentials using a python script; the two env vars outputted are `SNOWFLAKE_USER` and `SNOWFLAKE_PASSWORD`.
 
-Edit and run the following command including your Snowflake username and password, to create a Snowflake credentials file within `~/.snowflake/`.
+The python script accepts two optional arguments, `profile` and `application`; these determine the Snowflake profile you wish to use and the env vars to export. If the flags are not called, they will default to using your `connections` profile and output both terraform and SnowSQL env vars. **The CLI arguments are case sensitive**. The accepted values for `application` are `terraform`, `snowsql` or `all`, for example:
 
-    echo "SNOWFLAKE_USER=\nSNOWFLAKE_PASSWORD=" > ~/.snowflake/credentials
+     eval $(python3 load_snowflake_credentials.py --profile iw --application terraform)
 
-for example:
-
-    echo "SNOWFLAKE_USER=USER1\nSNOWFLAKE_PASSWORD=TheresNeverTooMuchData" > ~/.snowflake/credentials
-
-The file's contents should look like the following:
-
-    SNOWFLAKE_USER=USER1
-    SNOWFLAKE_PASSWORD=TheresNeverTooMuchData
-
-Note: There should be no new line character after `SNOWFLAKE_PASSWORD`, or any white space.
-
-Once this file has been created, run the following to set your env vars:
-
-    eval $(./credentials.sh)
+NOTE: This must be run in an `eval $( )` statement as the python script prints your vars to the terminal and `eval` evaluates the export statement, loading them into your environment. **If you do not use the `eval` statement your creds will be printed in plain text to your terminal and not loaded into your environment variables**.
 
 Remember to execute this `eval` statement for each terminal window you are working in.
 
