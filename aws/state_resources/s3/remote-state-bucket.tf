@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "${var.project}-remote-state"
+  bucket = "${var.project}-remote-state-${var.env}"
   acl    = "private"
   versioning {
     enabled = true
@@ -13,9 +13,9 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 
   tags = {
-    Name        = "${var.project}-remote-state"
-    Description = "Remote state bucket"
-    Owner       = "adam.dewberry"
+    Description = "Bucket to store the Terraform remote state files"
+    Environment = var.env
+    Owner       = ""
   }
 }
 
