@@ -3,8 +3,7 @@ import argparse
 import configparser
 
 
-def print_env_vars_for_terminal_eval_to_export():
-    profile, application = set_input_arguments()
+def print_env_vars_for_terminal_eval_to_export(profile: str, application: str):
     credentials = get_snowflake_credentials(profile=profile)
     if application == "snowsql":
         print_snowsql_auth_env_vars(credentials=credentials)
@@ -83,4 +82,5 @@ def print_snowsql_auth_env_vars(credentials):
 
 
 if __name__ == "__main__":
-    print_env_vars_for_terminal_eval_to_export()
+    profile, application = set_input_arguments()
+    print_env_vars_for_terminal_eval_to_export(profile, application)
