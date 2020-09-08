@@ -10,7 +10,7 @@ NOTES.md
 # .tfstate files
 *.tfstate
 *.tfstate.*
-
+*tfplan
 # Crash log files
 crash.log
 
@@ -36,3 +36,4 @@ override.tf.json
 # End of https://www.toptal.com/developers/gitignore/api/terraform
 
 .idea
+*.DS_Store
