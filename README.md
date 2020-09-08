@@ -6,8 +6,8 @@
 
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
-  - [Installing Terraform Snowflake Provider](#installing-terraform-snowflake-provider)
   - [Pre-commit Hooks](#pre-commit-hooks)
+  - [Installing Snowsql](#installing-snowsql)
   - [Setting your ENV VARS](#setting-your-env-vars)
 - [Creating Infrastructure](#creating-infrastructure)
   - [Remote state and lock table](#remote-state-and-lock-table)
@@ -25,8 +25,10 @@ Making use of Snowflake's default and recommended roles, this project creates th
 ## Dependencies
 In order to contribute or run this project, you will need:
 
-- [terraform v0.12.28](https://www.terraform.io/)
-- [AWS Command Line Interface](https://aws.amazon.com/cli/)
+- [terraform v0.13.0](https://www.terraform.io/)
+- [terraform-provider-snowflake v0.15](https://github.com/chanzuckerberg/terraform-provider-snowflake)
+- [snowsql v1.2.9](https://docs.snowflake.com/en/user-guide/snowsql.html)
+- [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
 ## Pre-commit Hooks
@@ -62,7 +64,7 @@ Edit the file and create a Snowflake profile (connections is the default profile
 
 If you are using multiple Snowflake accounts you can create additional profiles in this file using the same structure:
 
-    [iw]
+    [connections.iw]
     accountname = infinityworkspartner
     region = eu-west-1
     username = YourUserName
@@ -74,7 +76,7 @@ To deploy Snowflake using Terraform, this project depends on user authentication
 
 The python script accepts two optional arguments, `profile` and `application`; these determine the Snowflake profile you wish to use and the env vars to export. If the flags are not called, they will default to using your `connections` profile and output both terraform and SnowSQL env vars. **The CLI arguments are case sensitive**. The accepted values for `application` are `terraform`, `snowsql` or `all`, for example:
 
-     eval $(python3 load_snowflake_credentials.py --profile iw --application terraform)
+     eval $(python3 load_snowflake_credentials.py --profile connections.iw --application terraform)
 
 NOTE: This must be run in an `eval $( )` statement as the python script prints your vars to the terminal and `eval` evaluates the export statement, loading them into your environment. **If you do not use the `eval` statement your creds will be printed in plain text to your terminal and not loaded into your environment variables**.
 
@@ -85,18 +87,18 @@ Remember to execute this `eval` statement for each terminal window you are worki
 ## Remote state and lock table
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.
 
-The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/s3` and execute:
+The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/dev/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/s3` and execute:
 
     terraform init
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan  
     terraform apply tfplan
     rm -r .terraform && rm tfplan   
 
-This will create a remote state bucket with the name `<your-project>-remote-state`. Next for the lock table, again changing the `environment.tfvars` project name:
+This will create a remote state bucket with the name `<your-project>-remote-state-<env>`. Next for the lock table, again changing the `environment.tfvars` project name:
 
     cd ../dynamoDB
-    terraform init
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform init -backend=true -backend-config=environment/dev/backend-config.tfvars
+    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan  
     terraform apply tfplan
     rm -r .terraform && rm tfplan   
 
