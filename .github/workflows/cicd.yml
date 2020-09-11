@@ -23,8 +23,8 @@ jobs:
         run: ls -al
 
       # Can we run stuff?
-      - name: Run some stuff
-        run: terraform --version && aws --version && snowsql --version
+      # - name: Run some stuff
+      #   run: terraform --version && aws --version && snowsql --version
 
 
 
