@@ -1,4 +1,16 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-json
+      - id: check-yaml
+        args: ['--unsafe']
+      - id: debug-statements
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+
   - repo: git://github.com/antonbabenko/pre-commit-terraform
     rev: v1.17.0
     hooks:

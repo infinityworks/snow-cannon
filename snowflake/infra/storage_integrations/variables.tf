@@ -1,9 +1,17 @@
-variable "external_AWS_account_id" {
+variable "aws_region" {
   type        = string
-  description = "The account ID of the external AWS account you wish to connect to"
+  description = "AWS Region"
+  default     = "eu-west-2"
 }
 
-variable "storage_integration_IAM_role_name" {
+variable "snowflake_region" {
   type        = string
-  description = "Name of the IAM role in the external account which gives access to the target S3 bucket"
+  description = "Snowflake Region"
+  default     = "eu-west-1"
+}
+
+variable "snowflake_account" {
+  type        = string
+  description = "AWS Account Id"
+  default     = "infinityworkspartner"
 }
