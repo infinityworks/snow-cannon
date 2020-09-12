@@ -1,1 +1,0 @@
-project = "snow-cannon"
