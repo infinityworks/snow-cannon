@@ -13,8 +13,9 @@ resource "aws_s3_bucket" "data_lake" {
 
   tags = {
     Project     = var.project
-    Description = "Remote state bucket"
-    Owner       = "adam.dewberry"
+    Environment = var.env
+    Description = "Data ingestion bucket"
+    Owner       = "Snow Cannon"
   }
 }
 
