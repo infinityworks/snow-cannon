@@ -19,7 +19,7 @@
 
 This repo applies an infrastructure as code approach to deploying Snowflake resources using Terraform. It relies on the [open source provider by the Chan Zuckerberg Initiative](https://github.com/chanzuckerberg/terraform-provider-snowflake) and can create, alter and destroy users, roles and resources in Snowflake.
 
-Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role, and account integrations and related resources are owned by the `ACCOUNTADMIN` role.
+Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role, and account integrations and related resources are owned by the `SYSADMIN` role.
 
 # Getting started
 ## Dependencies
@@ -90,17 +90,17 @@ To begin we must create a remote state bucket and lock table within an AWS accou
 The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/dev/environment.tfvars`. After authenticating a local session to your AWS account, navigate to `./aws/state_resources/s3` and execute:
 
     terraform init
-    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan
     terraform apply tfplan
-    rm -r .terraform && rm tfplan   
+    rm -r .terraform && rm tfplan
 
 This will create a remote state bucket with the name `<your-project>-remote-state-<env>`. Next for the lock table, again changing the `environment.tfvars` project name:
 
     cd ../dynamoDB
     terraform init -backend=true -backend-config=environment/dev/backend-config.tfvars
-    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan
     terraform apply tfplan
-    rm -r .terraform && rm tfplan   
+    rm -r .terraform && rm tfplan
 
 Check with the CLI that `<your-project>-lock-table` now exists.
 
@@ -121,7 +121,7 @@ Each directory containing a resource type has an associated `main.tf` file which
 To create users and roles, navigate to `./Snowflake/rbac/` and run:
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 
@@ -146,14 +146,14 @@ First name your project, this name will comprise the data lake bucket name and w
 Next create the data lake from which we will consume `.csv` files; navigate to `./aws/s3/` and run:
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 
 Following this create the users, roles, databases and schemas by navigating to each respective directory and again running:
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 
@@ -170,7 +170,7 @@ Next create the external stage which depends on this integration.
 Finally create the pipe by navigating to `snowflake/infra/pipes/`and run
 
     terraform init -backend=true -backend-config=environment/backend-config.tfvars
-    terraform plan -var-file=environment/environment.tfvars -out=tfplan  
+    terraform plan -var-file=environment/environment.tfvars -out=tfplan
     terraform apply tfplan
     rm -r .terraform && rm tfplan
 

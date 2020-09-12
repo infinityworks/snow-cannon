@@ -16,7 +16,7 @@ def print_env_vars_for_terminal_eval_to_export(profile: str, application: str):
         raise ValueError(
             "Optional argument 'application' must be either 'terraform', 'snowsql' or 'all'"
         )
-    print('TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"')
+    print('export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"')
 
 
 def get_snowflake_credentials(profile: str) -> configparser.SectionProxy:
