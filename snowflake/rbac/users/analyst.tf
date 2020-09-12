@@ -4,5 +4,5 @@ resource "snowflake_user" "user_ANALYST" {
   default_role         = "PUBLIC"
   password             = "replace"
   must_change_password = "true"
-  comment              = "Testing"
+  comment              = "Example user"
 }
