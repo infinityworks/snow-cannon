@@ -12,7 +12,7 @@ jobs:
   ci:
     name: 'Continuous Integration'
     runs-on: ubuntu-latest
-    # container: infinityworks:awscli-terraform-snowflake # this doesn't exist yet
+    container: infinityworks:awscli-terraform-snowflake:1.0.0
 
     steps:
       # Checkout the repository to the GitHub Actions runner
@@ -23,8 +23,8 @@ jobs:
         run: ls -al
 
       # Can we run stuff?
-      # - name: Run some stuff
-      #   run: terraform --version && aws --version && snowsql --version
+      - name: Run some stuff
+        run: terraform --version && aws --version && snowsql --version
 
 
 
