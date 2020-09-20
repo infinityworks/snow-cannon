@@ -29,8 +29,15 @@ EOT
   }
 }
 
+resource "null_resource" "wait_for_iam_instantiation" {
+  depends_on = [null_resource.create_snowflake_table]
+  provisioner "local-exec" {
+    command = "echo 'Wait for IAM role instantiation' && sleep 10"
+  }
+}
+
 resource "snowflake_pipe" "pipe_event_data" {
-  depends_on     = [null_resource.create_snowflake_table]
+  depends_on     = [null_resource.wait_for_iam_instantiation]
   name           = "${local.formatted_s3_path}_DATA_PIPE"
   auto_ingest    = "true"
   database       = var.database

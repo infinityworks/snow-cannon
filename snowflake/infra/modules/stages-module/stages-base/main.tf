@@ -10,8 +10,4 @@ resource "snowflake_stage" "external" {
   url                 = "S3://${local.s3_bucket_and_key}"
   storage_integration = var.storage_integration
   comment             = "Stage which points to the ${var.s3_path} data in ${var.s3_bucket_name} bucket"
-
-  provisioner "local-exec" {
-    command = "echo 'Wait for IAM role instantiation' && sleep 10"
-  }
 }
