@@ -1,5 +1,5 @@
 locals {
-  formatted_s3_path = replace("${upper(var.s3_path)}", "-", "_")
+  formatted_s3_path = upper(replace(replace(var.s3_path, "-", "_"), "/", "_"))
 
   csv_table_def  = "${var.file_format == "CSV" ? csvdecode(file("table-definition.csv")) : []}"
   table_def      = "${var.file_format == "CSV" ? formatlist("%s %s", local.csv_table_def[*].field, local.csv_table_def[*].type) : []}"
