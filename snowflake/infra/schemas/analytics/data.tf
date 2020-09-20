@@ -1,8 +1,8 @@
-data "terraform_remote_state" "snowpipe_database" {
+data "terraform_remote_state" "databases" {
   backend = "s3"
   config = {
-    bucket = "snow-cannon-remote-state"
-    key    = "snowflake/databases/terraform.tfstate"
-    region = "eu-west-2"
+    bucket = "snow-cannon-remote-state-${var.env}"
+    key    = "snowflake/infra/databases/terraform.tfstate"
+    region = var.aws_region
   }
 }
