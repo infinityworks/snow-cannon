@@ -1,9 +1,17 @@
-variable "role_BI_ANALYST" {
+variable "aws_region" {
   type        = string
-  description = "Name for the role: BI_ANALYST"
+  description = "AWS Region"
+  default     = "eu-west-2"
 }
 
-variable "role_DATA_ANALYST" {
+variable "snowflake_region" {
   type        = string
-  description = "Name for the role: DATA_ANALYST"
+  description = "Snowflake Region"
+  default     = "eu-west-1"
+}
+
+variable "snowflake_account" {
+  type        = string
+  description = "AWS Account Id"
+  default     = "infinityworkspartner"
 }
