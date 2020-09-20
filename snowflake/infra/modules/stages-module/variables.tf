@@ -17,13 +17,11 @@ variable "has_key" {
 variable "database" {
   type        = string
   description = "Name of the Snowflake database the resource is attached to"
-  default     = "RAW_EVENTS"
 }
 
 variable "schema" {
   type        = string
   description = "Name of the Snowflake schema the resource is attached to"
-  default     = "GENERAL"
 }
 
 variable "permissions_boundary" {
