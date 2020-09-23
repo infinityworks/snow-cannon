@@ -1,3 +1,14 @@
+terraform {
+  required_providers {
+    snowflake = {
+      source  = "chanzuckerberg/snowflake"
+      version = "0.15.0"
+    }
+  }
+  backend "s3" {
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 locals {
