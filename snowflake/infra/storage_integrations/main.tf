@@ -22,14 +22,14 @@ provider "aws" {
 
 module "create_storage_integration" {
   source                            = "../modules/storage-integrations-module/storage-integrations-base/"
-  s3_bucket_name                    = "snow-cannon-data-lake"
-  s3_path                           = "to_ingest"
+  s3_bucket_name                    = "snow-cannon-data-lake-${lower(var.env)}"
+  s3_path                           = "to-ingest"
   storage_integration_IAM_role_name = "to-ingest-snowflake-storage-integration-role"
 }
 
 
 module "create_storage_integration_with_iam" {
   source         = "../modules/storage-integrations-module/"
-  s3_bucket_name = "snow-cannon-data-lake"
-  s3_path        = "to_get/sub_layer"
+  s3_bucket_name = "snow-cannon-data-lake-${lower(var.env)}"
+  s3_path        = "key1"
 }

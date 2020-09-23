@@ -22,8 +22,8 @@ provider "aws" {
 
 module "stage_example" {
   source         = "../modules/stages-module/"
-  s3_bucket_name = "snow-cannon-data-lake"
-  s3_path        = "key1/key2"
+  s3_bucket_name = "snow-cannon-data-lake-${lower(var.env)}"
+  s3_path        = "key2"
   database       = "ANALYTICS"
   schema         = "PUBLIC"
 }
