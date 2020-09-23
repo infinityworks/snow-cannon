@@ -5,8 +5,6 @@ terraform {
       version = "0.15.0"
     }
   }
-  backend "s3" {
-  }
 }
 
 locals {
