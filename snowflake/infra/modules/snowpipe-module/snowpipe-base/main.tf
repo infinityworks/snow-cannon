@@ -1,3 +1,14 @@
+terraform {
+  required_providers {
+    snowflake = {
+      source  = "chanzuckerberg/snowflake"
+      version = "0.15.0"
+    }
+  }
+  backend "s3" {
+  }
+}
+
 locals {
   formatted_s3_path = upper(replace(replace(var.s3_path, "-", "_"), "/", "_"))
 
