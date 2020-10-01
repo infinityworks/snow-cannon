@@ -6,7 +6,7 @@
 
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
-  - [Installing Snowsql](#installing-snowsql)
+  - [Installing SnowSQL](#installing-SnowSQL)
   - [Setting your ENV VARS](#setting-your-env-vars)
   - [Pre-commit Hooks](#pre-commit-hooks)
 - [Creating Infrastructure](#creating-infrastructure)
@@ -33,12 +33,13 @@ In order to contribute or run this project, you will need:
 
 - [terraform v0.13](https://www.terraform.io/)
 - [terraform-provider-snowflake v0.15](https://github.com/chanzuckerberg/terraform-provider-snowflake)
-- [snowsql v1.2](https://docs.snowflake.com/en/user-guide/snowsql.html)
+- [Python v3.7](https://www.python.org/downloads/release/python-381/)
+- [SnowSQL v1.2](https://docs.snowflake.com/en/user-guide/snowsql.html)
 - [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
-## Installing Snowsql
-The project uses the snowsql CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download snowsql cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
+## Installing SnowSQL
+The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
 
     brew cask install snowflake-snowsql
 
@@ -62,7 +63,7 @@ If you are using multiple Snowflake accounts or users you can create additional 
 
 
 ## Setting your ENV VARS
-To deploy Snowflake using Terraform, this project depends on user authentication by environment variables; to simplify this process we load the snowsql config credentials using a python script; the two env vars outputted are `SNOWFLAKE_USER` and `SNOWFLAKE_PASSWORD`.
+To deploy Snowflake using Terraform, this project depends on user authentication by environment variables; to simplify this process we load the SnowSQL config credentials using a python script; the two env vars outputted are `SNOWFLAKE_USER` and `SNOWFLAKE_PASSWORD`.
 
 The python script accepts two optional arguments, `profile` and `application`; these determine the Snowflake profile you wish to use and the env vars to export. If the flags are not called, they will default to using your `connections` profile and output both terraform and SnowSQL env vars. **The CLI arguments are case sensitive**. The accepted values for `application` are `terraform`, `snowsql` or `all`, for example:
 
@@ -99,7 +100,7 @@ To begin we must create a remote state bucket and lock table within an AWS accou
 
 The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/dev/environment.tfvars`.
 
-To run terraform locally you must have a [valid aws session](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) and [set your `AWS_PROFILE`](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html). After authenticating, navigate to `./aws/state_resources/s3` and execute:
+To run terraform locally you must have a [valid aws session](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) and [set your `AWS_PROFILE`](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html).
 
 In order to deploy the state bucket, navigate to `./aws/state_resources/s3/` and run:
 
