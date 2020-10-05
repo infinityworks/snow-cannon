@@ -67,7 +67,7 @@ To deploy Snowflake using Terraform, this project depends on user authentication
 
 The python script accepts two optional arguments, `profile` and `application`; these determine the Snowflake profile you wish to use and the env vars to export. If the flags are not called, they will default to using your `connections` profile and output both terraform and SnowSQL env vars. **The CLI arguments are case sensitive**. The accepted values for `application` are `terraform`, `snowsql` or `all`, for example:
 
-     eval $(python3 load_snowflake_credentials.py --profile connections.iw --application all)
+     eval $(python3 load_snowflake_credentials.py --profile connections --application all)
 
 NOTE: This must be run in an `eval $( )` statement as the python script prints your vars to the terminal and `eval` evaluates the export statement, loading them into your environment. **If you do not use the `eval` statement your creds will be printed in plain text to your terminal and not loaded into your environment variables**.
 
