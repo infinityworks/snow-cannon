@@ -33,7 +33,7 @@ resource "null_resource" "create_snowflake_table" {
     command = <<EOT
 {
       snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER --query 'CREATE TABLE IF NOT EXISTS ${var.database}.${var.schema}.${local.formatted_s3_path} ${local.formatted_rows}' || \
-      echo 'Make sure $SNOWFLAKE_ACCOUNT and $SNOWFLAKE_USER env vars are set'
+      echo 'Make sure $SNOWFLAKE_ACCOUNT and $SNOWFLAKE_USER env vars are set and the snowsql tool is on the path'; exit 1
 }
 EOT
   }
