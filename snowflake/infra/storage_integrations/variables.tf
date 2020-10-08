@@ -15,3 +15,8 @@ variable "snowflake_account" {
   description = "AWS Account Id"
   default     = "infinityworkspartner"
 }
+
+variable "env" {
+  type        = string
+  description = "The environment a resource belongs to"
+}
