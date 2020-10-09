@@ -13,9 +13,10 @@ output "entries" {
     }
 
     providers = {
-      aws_account       = local.environment[terraform.workspace].aws_account.id
-      aws_region        = local.environment[terraform.workspace].aws_account.region
-      aws_profile       = local.environment[terraform.workspace].aws_account.profile
+      aws_account = local.environment[terraform.workspace].aws_account.id
+      aws_region  = local.environment[terraform.workspace].aws_account.region
+      aws_profile = local.environment[terraform.workspace].aws_account.profile
+
       snowflake_account = local.environment[terraform.workspace].snowflake_account.id
       snowflake_region  = local.environment[terraform.workspace].snowflake_account.region
     }
