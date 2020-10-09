@@ -1,28 +1,23 @@
-terraform {
-  required_version = ">= 0.13.2"
-  backend "s3" {}
-  required_providers {
-    snowflake = {
-      source  = "chanzuckerberg/snowflake"
-      version = "0.15.0"
-    }
-  }
+module "config" {
+  source         = "../../../terraform-config"
+  workspace_name = terraform.workspace
 }
 
 provider "snowflake" {
-  account = var.snowflake_account
-  region  = var.snowflake_region
+  account = module.config.entries.providers.snowflake_account
+  region  = module.config.entries.providers.snowflake_region
   role    = "SYSADMIN"
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region  = module.config.entries.providers.aws_region
+  profile = module.config.entries.providers.aws_profile
   version = "~> 3.5.0"
 }
 
 module "stage_example" {
   source         = "../modules/stages-module/"
-  s3_bucket_name = "snow-cannon-data-lake-${lower(var.env)}"
+  s3_bucket_name = "snow-cannon-data-lake-${local.env}"
   s3_path        = "key2"
   database       = "ANALYTICS"
   schema         = "PUBLIC"
