@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "chanzuckerberg/snowflake"
-      version = "0.17.1"
-    }
-  }
-}
-
-locals {
-  formatted_iam_name = lower(replace(replace(var.s3_path, "_", "-"), "/", "-"))
-}
-
 module "create_storage_integration" {
   source                            = "./storage-integrations-base/"
   s3_bucket_name                    = var.s3_bucket_name

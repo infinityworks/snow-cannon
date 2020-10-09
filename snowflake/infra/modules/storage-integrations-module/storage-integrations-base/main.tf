@@ -1,20 +1,4 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "chanzuckerberg/snowflake"
-      version = "0.17.1"
-    }
-  }
-}
-
-
 data "aws_caller_identity" "current" {}
-
-locals {
-  formatted_s3_path = upper(replace(replace(var.s3_path, "-", "_"), "/", "_"))
-  s3_bucket_and_key = "${var.has_key == false ? join("/", [var.s3_bucket_name, ""]) : join("/", [var.s3_bucket_name, var.s3_path, ""])}"
-  iam_path          = "${var.path == null ? "" : join(var.path, "/")}"
-}
 
 resource "snowflake_storage_integration" "storage_integration" {
   name                      = "${local.formatted_s3_path}_DATA_STORAGE_INTEGRATION"
