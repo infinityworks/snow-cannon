@@ -1,5 +1,7 @@
-output "project_name" {
-  value = var.project
+output "debug" {
+  value = {
+    config = module.config.entries
+  }
 }
 
 output "data_lake_id" {
