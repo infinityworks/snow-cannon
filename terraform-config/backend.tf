@@ -1,5 +1,5 @@
 locals {
-  state_bucket_name = "${var.project_name}-remote-state-${terraform.workspace}"
+  state_bucket_name = "${var.project_name}-remote-state"
 }
 
 locals {
