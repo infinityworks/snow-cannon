@@ -1,15 +1,6 @@
-variable "aws_region" {
+variable "workspace_name" {
+  # (https://github.com/hashicorp/terraform/issues/22802)"
+  default     = null
+  description = "The actual name of the cloud workspace must be passed in when running inside terraform cloud. This variable should only be set within a workspace defined within terraform cloud."
   type        = string
-  description = "AWS Region"
-  default     = "eu-west-2"
-}
-
-variable "project" {
-  type        = string
-  description = "The project to which the resource belongs"
-}
-
-variable "env" {
-  type        = string
-  description = "The environment a resource belongs to"
 }

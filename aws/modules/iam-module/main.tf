@@ -1,9 +1,3 @@
-locals {
-  s3_bucket_and_key  = "${var.has_key == false ? join("/", [var.s3_bucket_name, "*"]) : join("/", [var.s3_bucket_name, var.s3_path, "*"])}"
-  formatted_iam_name = lower(replace(replace(var.s3_path, "_", "-"), "/", "-"))
-}
-
-
 resource "aws_iam_role" "storage_integration_role" {
   name                 = "${local.formatted_iam_name}-snowflake-storage-integration-role"
   permissions_boundary = var.permissions_boundary
