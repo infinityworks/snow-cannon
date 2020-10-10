@@ -16,9 +16,11 @@ output "entries" {
       aws_account = local.environment[terraform.workspace].aws_account.id
       aws_region  = local.environment[terraform.workspace].aws_account.region
       aws_profile = local.environment[terraform.workspace].aws_account.profile
+      aws_version = local.environment.providers.aws_version
 
       snowflake_account = local.environment[terraform.workspace].snowflake_account.id
       snowflake_region  = local.environment[terraform.workspace].snowflake_account.region
+      snowflake_version = local.environment.providers.snowflake_version
     }
 
   }
