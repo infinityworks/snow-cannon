@@ -135,7 +135,7 @@ Each environment's config can be added to `terraform-config/providers.tf` and th
           }
         }
         providers = {
-          snowflake_version = "0.15.0"
+          snowflake_version = "0.17.1"
           aws_version       = "~> 3.5.0"
         }
       }
