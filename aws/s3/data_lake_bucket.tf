@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "data_lake" {
-  bucket        = var.data_lake_bucket
+  bucket        = "${local.project_name}-data-lake-${local.formatted_env}"
   force_destroy = true
   acl           = "private"
 
@@ -12,10 +12,9 @@ resource "aws_s3_bucket" "data_lake" {
   }
 
   tags = {
-    Project     = var.project
-    Environment = var.env
+    Project     = local.project_name
+    Environment = local.env
     Description = "Data ingestion bucket"
-    Owner       = "Snow Cannon"
   }
 }
 

@@ -94,6 +94,12 @@ You may also optionally run these checks against all extant files in the project
 **Important note: if your code fails pre-commit checks, your commit will be cancelled. You'll need to fix the issues and commit again.**
 
 # Creating Infrastructure
+## Workspaces
+
+Each environment is separated using Terraform workspaces. Each workspace has its own remote state file and a module dynamically passes the correct AWS profile and Snowflake account details based upon the workspace selected. Each time you init you can create and or select a workspace. To keep things simple, run the following each time:
+
+    terraform init && terraform workspace new dev || terraform workspace select dev
+    terraform apply
 
 ## Remote state and lock table
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.

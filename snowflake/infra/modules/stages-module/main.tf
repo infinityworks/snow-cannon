@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    snowflake = {
-      source  = "chanzuckerberg/snowflake"
-      version = "0.15.0"
-    }
-  }
-}
-
 module "create_storage_integration" {
   source               = "../storage-integrations-module/"
   s3_bucket_name       = var.s3_bucket_name

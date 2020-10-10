@@ -1,3 +1,9 @@
+output "debug" {
+  value = {
+    config = module.config.entries
+  }
+}
+
 output "BI_ANALYST_name" {
   value = snowflake_role.BI_ANALYST.name
 }
