@@ -6,10 +6,12 @@
 
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
-  - [Installing SnowSQL](#installing-SnowSQL)
+  - [Installing SnowSQL](#installing-snowsql)
   - [Setting your ENV VARS](#setting-your-env-vars)
   - [Pre-commit Hooks](#pre-commit-hooks)
 - [Creating Infrastructure](#creating-infrastructure)
+  - [Workspaces](#workspaces)
+    - [Creating and selecting a workspace](#creating-and-selecting-a-workspace)
   - [Remote state and lock table](#remote-state-and-lock-table)
   - [Provisioning Snowflake resources](#provisioning-snowflake-resources)
     - [Modules](#modules)
@@ -32,7 +34,7 @@ Making use of Snowflake's default and recommended roles, this project creates th
 In order to contribute or run this project, you will need:
 
 - [terraform v0.13](https://www.terraform.io/)
-- [terraform-provider-snowflake v0.15](https://github.com/chanzuckerberg/terraform-provider-snowflake)
+- [terraform-provider-snowflake v0.17.1](https://github.com/chanzuckerberg/terraform-provider-snowflake)
 - [Python v3.7](https://www.python.org/downloads/release/python-381/)
 - [SnowSQL v1.2](https://docs.snowflake.com/en/user-guide/snowsql.html)
 - [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
@@ -96,10 +98,58 @@ You may also optionally run these checks against all extant files in the project
 # Creating Infrastructure
 ## Workspaces
 
-Each environment is separated using Terraform workspaces. Each workspace has its own remote state file and a module dynamically passes the correct AWS profile and Snowflake account details based upon the workspace selected. Each time you init you can create and or select a workspace. To keep things simple, run the following each time:
+Environments are separated using Terraform workspaces. Each workspace has its own remote state file and the module `./terraform-config/` dynamically passes the correct AWS profile and Snowflake account details based upon the workspace selected.
 
-    terraform init && terraform workspace new dev || terraform workspace select dev
+Each environment's config can be added to `terraform-config/providers.tf` and the workspace name must correspond exactly to the environment's map within this file.
+
+    locals {
+      environment = {
+        dev = {
+          name       = "dev"
+          group_name = "nonprod"
+
+          aws_account = {
+            profile = "aws-dev"
+            id      = "xxxxxxxxxxxx"
+            region  = "eu-west-2"
+          }
+
+          snowflake_account = {
+            id     = "infinityworkspartner"
+            region = "eu-west-1"
+          }
+        }
+        staging = {
+          name       = "staging"
+          group_name = "nonprod"
+
+          aws_account = {
+            profile = "aws-staging"
+            id      = "yyyyyyyyyyyy"
+            region  = "eu-west-2"
+          }
+
+          snowflake_account = {
+            id     = "infinityworkspartnerstaging"
+            region = "eu-west-1"
+          }
+        }
+        providers = {
+          snowflake_version = "0.15.0"
+          aws_version       = "~> 3.5.0"
+        }
+      }
+    }
+
+The AWS profile must also match the credentials profiles you wish to use.
+
+### Creating and selecting a workspace
+After initialising Terraform you can create and/or select a workspace. When a workspace is created, it is automatically adopted. To keep things simple, edit the following command with your env name and run the following each time:
+
+    terraform init && terraform workspace new <env> || terraform workspace select <env>
     terraform apply
+
+If the workspace already exists, the follow-up command will select the workspace.
 
 ## Remote state and lock table
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.
@@ -110,17 +160,14 @@ To run terraform locally you must have a [valid aws session](https://docs.aws.am
 
 In order to deploy the state bucket, navigate to `./aws/state_resources/s3/` and run:
 
-    terraform init
-    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan
-    terraform apply tfplan
-    rm -r .terraform && rm tfplan
+    terraform init && terraform workspace new dev || terraform workspace select dev
+    terraform apply
 
 This will create a remote state bucket with the name `<your-project>-remote-state-<env>`. Next for the lock table, again changing the `environment.tfvars` variables:
 
     cd ../dynamoDB
-    terraform init -backend=true -backend-config=environment/dev/backend-config.tfvars
-    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan
-    terraform apply tfplan
+    terraform init && terraform workspace new dev || terraform workspace select dev
+    terraform apply
     rm -r .terraform && rm tfplan
 
 Check with the aws CLI that `<your-project>-lock-table` now exists:
@@ -174,10 +221,8 @@ The default password is currently "replace", this must be changed immediately af
 
 Once this block has been written, run:
 
-    terraform init -backend=true -backend-config=environment/dev/backend-config.tfvars
-    terraform plan -var-file=environment/dev/environment.tfvars -out=tfplan
-    terraform apply tfplan
-    rm -r .terraform && rm tfplan
+    terraform init && terraform workspace new dev || terraform workspace select dev
+    terraform apply
 
 This pattern of initialisation, planning and deployment is repeated across each directory to create different resources.
 
