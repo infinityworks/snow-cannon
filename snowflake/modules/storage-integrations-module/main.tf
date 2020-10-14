@@ -7,7 +7,7 @@ module "create_storage_integration" {
 }
 
 module "create_aws_iam_role" {
-  source                                    = "../../../../aws/modules/iam-module/"
+  source                                    = "../../../aws/modules/iam-module/"
   s3_bucket_name                            = var.s3_bucket_name
   s3_path                                   = var.s3_path
   has_key                                   = var.has_key
