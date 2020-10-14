@@ -2,8 +2,8 @@ output "entries" {
   value = {
     main = {
       project_name = var.project_name
-      group_name   = local.environment[terraform.workspace].group_name
-      env          = local.environment[terraform.workspace].name
+      group_name   = local.variables.group_name
+      env          = local.variables.name
     }
 
     backend = {
@@ -13,13 +13,13 @@ output "entries" {
     }
 
     providers = {
-      aws_account = local.environment[terraform.workspace].aws_account.id
-      aws_region  = local.environment[terraform.workspace].aws_account.region
-      aws_profile = local.environment[terraform.workspace].aws_account.profile
+      aws_account = local.variables.aws_account.id
+      aws_region  = local.variables.aws_account.region
+      aws_profile = local.variables.aws_account.profile
       aws_version = local.environment.providers.aws_version
 
-      snowflake_account = local.environment[terraform.workspace].snowflake_account.id
-      snowflake_region  = local.environment[terraform.workspace].snowflake_account.region
+      snowflake_account = local.variables.snowflake_account.id
+      snowflake_region  = local.variables.snowflake_account.region
       snowflake_version = local.environment.providers.snowflake_version
     }
 
