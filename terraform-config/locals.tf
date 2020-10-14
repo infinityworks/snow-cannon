@@ -3,5 +3,9 @@ locals {
 }
 
 locals {
+  variables = local.environment[terraform.workspace]
+}
+
+locals {
   project_name = "snow-cannon"
 }
