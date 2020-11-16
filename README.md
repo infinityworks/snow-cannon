@@ -6,6 +6,9 @@
 
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
+  - [Snowflake Account Setup](#snowflake-account-setup)
+    - [Snowflake grants](#snowflake-grants)
+    - [Resource naming](#resource-naming)
   - [Installing SnowSQL](#installing-snowsql)
   - [Setting your ENV VARS](#setting-your-env-vars)
   - [Pre-commit Hooks](#pre-commit-hooks)
@@ -27,7 +30,7 @@
 
 This repo applies an infrastructure as code approach to deploying Snowflake resources using Terraform. It relies on the [open source provider by the Chan Zuckerberg Initiative](https://github.com/chanzuckerberg/terraform-provider-snowflake) and can create, alter and destroy users, roles and resources in Snowflake.
 
-Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role, and account integrations and related resources are owned by the `ACCOUNTADMIN` role.
+Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role.
 
 # Getting started
 ## Dependencies
@@ -39,6 +42,22 @@ In order to contribute or run this project, you will need:
 - [SnowSQL v1.2](https://docs.snowflake.com/en/user-guide/snowsql.html)
 - [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
+
+## Snowflake Account Setup
+
+### Snowflake grants
+As part of account setup, the grant for `create integration` must be assigned to SYSADMIN for the modules to function correctly. By default, only the ACCOUNTADMIN can create `storage integrations` and we wanted to abstract this high powered role away from automated deployment users and so grant integrations to SYSADMIN to handle all infra resources.
+
+To achieve this, run:
+
+    USE ROLE ACCOUNTADMIN;
+    GRANT CREATE INTEGRATION ON ACCOUNT to ROLE SYSADMIN;
+
+ACCOUNTADMIN should be a break-glass solution and locked away.
+
+
+### Resource naming
+Many resources like the remote state bucket and lock table include the project name in the resource. I suggest you do a find and replace of `snow-cannon` with your project name to replace all instances.
 
 ## Installing SnowSQL
 The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
@@ -100,7 +119,7 @@ You may also optionally run these checks against all extant files in the project
 
 Environments are separated using Terraform workspaces. Each workspace has its own remote state file and the module `./terraform-config/` dynamically passes the correct AWS profile and Snowflake account details based upon the workspace selected.
 
-Each environment's config can be added to `terraform-config/providers.tf` and the workspace name must correspond exactly to the environment's map within this file.
+Each environment's config can be added to `terraform-config/providers.tf` and the workspace name must correspond exactly to the environment's map/key within this file.
 
     locals {
       environment = {
