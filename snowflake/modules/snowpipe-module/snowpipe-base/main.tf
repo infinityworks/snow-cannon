@@ -17,7 +17,7 @@ resource "null_resource" "wait_for_iam_instantiation" {
   }
 }
 
-resource "snowflake_pipe" "pipe_event_data" {
+resource "snowflake_pipe" "create_pipe" {
   depends_on     = [null_resource.wait_for_iam_instantiation]
   name           = "${local.formatted_s3_path}_DATA_PIPE"
   auto_ingest    = "true"
@@ -39,7 +39,7 @@ resource "null_resource" "update_s3_bucket_notification" {
 {
  python3 ${path.module}/set-bucket-notification.py --s3_key ${var.s3_path} \
   --bucket ${var.s3_bucket_name} \
-  --queue ${snowflake_pipe.pipe_event_data.notification_channel} \
+  --queue ${snowflake_pipe.create_pipe.notification_channel} \
   --prefix ${local.filter_prefix} --suffix ${var.filter_suffix}
 }
 EOT

@@ -8,7 +8,7 @@ module "create_storage_integration" {
   path                 = var.path
 }
 
-module "create_stage" {
+module "create_external_stage" {
   source              = "./stages-base/"
   s3_bucket_name      = var.s3_bucket_name
   s3_path             = var.s3_path
