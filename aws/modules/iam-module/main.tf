@@ -25,8 +25,10 @@ EOF
 
 
   tags = {
-    Owner  = var.owner
-    Source = var.s3_path
+    Description = "IAM role used in Snowflake account integrations"
+    Purpose     = "Infra used in demoing Snowflake quick deploments"
+    Owner       = "Adam Dewberry & Rich Allen"
+    Source      = var.s3_path
   }
 }
 

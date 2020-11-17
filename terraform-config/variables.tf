@@ -7,6 +7,6 @@ variable "workspace_name" {
 
 variable "project_name" {
   type        = string
-  default     = "iw-demo"
+  default     = "iw-snowflake-demo"
   description = "The project to which the resource belongs"
 }

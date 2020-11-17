@@ -7,5 +7,5 @@ locals {
 }
 
 locals {
-  project_name = "iw-demo"
+  project_name = "iw-snowflake-demo"
 }

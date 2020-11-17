@@ -40,8 +40,3 @@ variable "snowflake_storage_integration_external_id" {
 variable "snowflake_storage_integration_user_arn" {
   description = "The user ARN provided by the snowflake storage integration"
 }
-
-variable "owner" {
-  description = "The owner of this resource"
-  default     = ""
-}

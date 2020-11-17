@@ -14,8 +14,10 @@ resource "aws_s3_bucket" "terraform_state" {
 
   tags = {
     Description = "Bucket to store the Terraform remote state files"
+    Purpose     = "Infra used in demoing Snowflake quick deploments"
     Environment = local.env
-    Owner       = local.project_name
+    Project     = local.project_name
+    Owner       = "Adam Dewberry & Rich Allen"
   }
 }
 

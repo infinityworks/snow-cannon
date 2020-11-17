@@ -10,6 +10,8 @@ resource "aws_dynamodb_table" "lock-table" {
   tags = {
     Description = "Terraform lock table for Snowflake deployments"
     Environment = local.env
-    Owner       = local.project_name
+    Project     = local.project_name
+    Purpose     = "Infra used in demoing Snowflake quick deploments"
+    Owner       = "Adam Dewberry & Rich Allen"
   }
 }

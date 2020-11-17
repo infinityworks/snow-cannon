@@ -15,6 +15,8 @@ resource "aws_s3_bucket" "data_lake" {
     Project     = local.project_name
     Environment = local.env
     Description = "Data ingestion bucket"
+    Purpose     = "Infra used in demoing Snowflake quick deploments"
+    Owner       = "Adam Dewberry & Rich Allen"
   }
 }
 
