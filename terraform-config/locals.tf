@@ -7,5 +7,5 @@ locals {
 }
 
 locals {
-  project_name = "snow-cannon"
+  project_name = "iw-demo"
 }

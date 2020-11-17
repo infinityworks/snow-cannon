@@ -57,7 +57,7 @@ ACCOUNTADMIN should be a break-glass solution and locked away.
 
 
 ### Resource naming
-Many resources like the remote state bucket and lock table include the project name in the resource. I suggest you do a find and replace of `snow-cannon` with your project name to replace all instances.
+Many resources like the remote state bucket and lock table include the project name in the resource. I suggest you do a find and replace of `iw-demo` with your project name to replace all instances.
 
 ## Installing SnowSQL
 The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:

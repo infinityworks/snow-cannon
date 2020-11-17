@@ -3,8 +3,8 @@ terraform {
 
   backend "s3" {
     profile        = "aws-dev"
-    bucket         = "snow-cannon-remote-state"
-    dynamodb_table = "snow-cannon-lock-table"
+    bucket         = "iw-demo-remote-state"
+    dynamodb_table = "iw-demo-lock-table"
     key            = "snowflake/infra/schemas/analytics/terraform.tfstate"
     region         = "eu-west-2"
     encrypt        = true
