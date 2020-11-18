@@ -1,5 +1,5 @@
 resource "snowflake_database" "db_ANALYTICS" {
-  name                        = "ANALYTICS"
+  name                        = "IW_DEMO"
   comment                     = "Data presented in the analytics layer"
   data_retention_time_in_days = 14
 }
