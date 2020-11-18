@@ -8,10 +8,10 @@ resource "aws_dynamodb_table" "lock-table" {
   }
 
   tags = {
+    Contact     = "Adam.Dewberry@infinityworks.com"
     Description = "Terraform lock table for Snowflake deployments"
     Environment = local.env
     Project     = local.project_name
     Purpose     = "Infra used in demoing Snowflake quick deploments"
-    Owner       = "Adam Dewberry & Rich Allen"
   }
 }

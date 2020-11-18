@@ -12,11 +12,11 @@ resource "aws_s3_bucket" "data_lake" {
   }
 
   tags = {
-    Project     = local.project_name
-    Environment = local.env
+    Contact     = "Adam.Dewberry@infinityworks.com"
     Description = "Data ingestion bucket"
+    Environment = local.env
+    Project     = local.project_name
     Purpose     = "Infra used in demoing Snowflake quick deploments"
-    Owner       = "Adam Dewberry & Rich Allen"
   }
 }
 

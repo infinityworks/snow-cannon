@@ -25,9 +25,10 @@ EOF
 
 
   tags = {
+    Contact     = "Adam.Dewberry@infinityworks.com"
     Description = "IAM role used in Snowflake account integrations"
+    Project     = local.project_name
     Purpose     = "Infra used in demoing Snowflake quick deploments"
-    Owner       = "Adam Dewberry & Rich Allen"
     Source      = var.s3_path
   }
 }
