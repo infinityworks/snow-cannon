@@ -1,5 +1,5 @@
-# output "debug" {
-#   value = {
-#     config = module.config.entries
-#   }
-# }
+output "debug" {
+  value = {
+    config = module.config.entries
+  }
+}
