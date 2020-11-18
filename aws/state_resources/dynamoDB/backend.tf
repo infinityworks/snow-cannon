@@ -2,12 +2,11 @@ terraform {
   required_version = ">= 0.13.2"
 
   backend "s3" {
-    profile        = "aws-dev"
-    bucket         = "snow-cannon-remote-state"
-    dynamodb_table = "snow-cannon-lock-table"
-    key            = "aws/state-resources/terraform.tfstate"
-    region         = "eu-west-2"
-    encrypt        = true
+    profile = "aws-dev"
+    bucket  = "snow-cannon-remote-state"
+    key     = "aws/state-resources/terraform.tfstate"
+    region  = "eu-west-2"
+    encrypt = true
   }
 
   required_providers {
