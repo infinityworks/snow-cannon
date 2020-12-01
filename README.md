@@ -6,9 +6,9 @@
 
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
+  - [Project Setup & Resource naming](#project-setup--resource-naming)
   - [Snowflake Account Setup](#snowflake-account-setup)
     - [Snowflake grants](#snowflake-grants)
-    - [Resource naming](#resource-naming)
   - [Installing SnowSQL](#installing-snowsql)
   - [Setting your ENV VARS](#setting-your-env-vars)
   - [Pre-commit Hooks](#pre-commit-hooks)
@@ -43,6 +43,13 @@ In order to contribute or run this project, you will need:
 - [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
+## Project Setup & Resource naming
+The naming convention for many resources, including the remote state bucket and lock table, incorporate the project name, for example `your-project-remote-state`. To set this variable, run the following Python file and when prompted, enter your chosen project name. Avoid using special or escape characters.
+
+    python3 project_setup.py
+
+**Note:** Please remember S3 is a global namespace and so choose something unique, perhaps including a hash. It is down to your discretion if you wish to obfuscate and alias a project should you wish to make your buckets harder to find.
+
 ## Snowflake Account Setup
 
 ### Snowflake grants
@@ -56,8 +63,6 @@ To achieve this, run:
 ACCOUNTADMIN should be a break-glass solution and locked away.
 
 
-### Resource naming
-Many resources like the remote state bucket and lock table include the project name in the resource. I suggest you do a find and replace of `snow-cannon` with your project name to replace all instances.
 
 ## Installing SnowSQL
 The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
