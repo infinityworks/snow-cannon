@@ -1,6 +1,7 @@
 NOTES.md
 sample_data/
 snowsql_rt.log
+__pycache__
 
 # Created by https://www.toptal.com/developers/gitignore/api/terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform
