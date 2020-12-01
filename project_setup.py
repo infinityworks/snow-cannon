@@ -8,6 +8,8 @@ def replace_project_name(current_name="snow-cannon", dirs_to_glob="./**/*.tf"):
     )
     project_name_replace_specials = re.sub(r"[^a-zA-Z0-9]+", "-", project_name)
 
+    print(f"Project name: {project_name_replace_specials}")
+
     for filepath in glob.iglob(dirs_to_glob, recursive=True):
         with open(filepath) as file:
             file_contents = file.read()
