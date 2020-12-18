@@ -5,6 +5,11 @@ variable "workspace_name" {
   type        = string
 }
 
+variable "permissions_boundary" {
+  description = "The IAM role permission boundary"
+  default     = null
+}
+
 variable "path" {
   description = "IAM role path"
   default     = null
