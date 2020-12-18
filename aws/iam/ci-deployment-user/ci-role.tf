@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "ci_policy" {
   }
 
   statement {
-    sid       = "managestatelock"
+    sid       = "manageStateLock"
     effect    = "Allow"
     resources = ["arn:aws:dynamodb:*:*:table/${local.project_name}-lock-table"]
 
@@ -76,23 +76,26 @@ data "aws_iam_policy_document" "ci_policy" {
   }
 
   statement {
-    sid       = "listbucketdata"
+    sid       = "listBucketData"
     effect    = "Allow"
     resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.formatted_env}"]
 
     actions = [
       "s3:ListBucket",
+      "s3:GetBucketNotification*",
+      "s3:PutBucketNotification*",
     ]
   }
 
   statement {
-    sid       = "interractobjectsdata"
+    sid       = "interractObjectsData"
     effect    = "Allow"
     resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.formatted_env}/*"]
 
     actions = [
       "s3:Get*",
       "s3:Put*",
+      "s3:Delete*",
     ]
   }
 
@@ -107,13 +110,14 @@ data "aws_iam_policy_document" "ci_policy" {
   }
 
   statement {
-    sid       = "interractobjectsstate"
+    sid       = "interractObjectsState"
     effect    = "Allow"
     resources = ["arn:aws:s3:::${local.project_name}-remote-state/*"]
 
     actions = [
       "s3:Get*",
       "s3:Put*",
+      "s3:Delete*",
     ]
   }
 }

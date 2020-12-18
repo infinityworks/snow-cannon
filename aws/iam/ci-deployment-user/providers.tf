@@ -1,5 +1,5 @@
 module "config" {
-  source         = "../../terraform-config"
+  source         = "../../../terraform-config"
   workspace_name = terraform.workspace
 }
 
