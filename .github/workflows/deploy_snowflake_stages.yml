@@ -30,13 +30,13 @@ jobs:
         role-duration-seconds: 900
         role-session-name: CI-deployment
 
-    - name: deploy-stages
-      run: |
-        cd snowflake/infra/stages
-        terraform init
-        terraform workspace new $ENV || terraform workspace select $ENV
-        terraform plan
-        terraform apply -input=false -auto-approve
+    # - name: deploy-stages
+    #   run: |
+    #     cd snowflake/infra/stages
+    #     terraform init
+    #     terraform workspace new $ENV || terraform workspace select $ENV
+    #     terraform plan
+    #     terraform apply -input=false -auto-approve
 
      # - name: test-snowsql
      #   run: |
