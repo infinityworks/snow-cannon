@@ -1,12 +1,12 @@
-name: 'Deploy Integrations'
+name: 'Deploy pipes'
 
 on:
   push:
-    paths:
-      - 'snowflake/infra/storage_integrations/**'
+    # paths:
+    #   - 'snowflake/infra/pipes/**'
 
 jobs:
-  deploy-snowflake-integrations:
+  deploy-snowflake-pipes:
     runs-on: ubuntu-latest
     container: infinityworks/awscli-terraform-snowflake:1.0.0
     env:
@@ -14,7 +14,9 @@ jobs:
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
       SNOWFLAKE_ROLENAME: SYSADMIN
+
 
     steps:
     - name: checkout-code
@@ -30,9 +32,9 @@ jobs:
         role-duration-seconds: 900
         role-session-name: CI-deployment
 
-    - name: deploy-integrations
+    - name: deploy-pipes
       run: |
-        cd snowflake/infra/storage_integrations
+        cd snowflake/infra/pipes/example-pipe
         terraform init
         terraform workspace new $ENV || terraform workspace select $ENV
         terraform plan
