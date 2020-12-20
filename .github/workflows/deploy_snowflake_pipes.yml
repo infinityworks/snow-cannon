@@ -1,0 +1,41 @@
+name: 'Deploy pipes'
+
+on:
+  push:
+    paths:
+      - 'snowflake/infra/pipes/**'
+
+jobs:
+  deploy-snowflake-pipes:
+    runs-on: ubuntu-latest
+    container: infinityworks/awscli-terraform-snowflake:1.0.0
+    env:
+      ENV: dev
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLENAME: SYSADMIN
+
+
+    steps:
+    - name: checkout-code
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 900
+        role-session-name: CI-deployment
+
+    - name: deploy-pipes
+      run: |
+        cd snowflake/infra/pipes/example-pipe
+        terraform init
+        terraform workspace new $ENV || terraform workspace select $ENV
+        terraform plan
+        terraform apply -input=false -auto-approve
