@@ -2,7 +2,9 @@ name: 'Integration tests'
 
 on:
   push:
-
+    paths:
+      - 'project_setup.py'
+      - 'tests/**'
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -34,21 +36,3 @@ jobs:
     - name: run-project-setup-tests
       run: |
         pytest tests -vvv
-
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-2
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        role-duration-seconds: 900
-        role-session-name: CI-deployment
-
-    - name: deploy-integrations
-      run: |
-        cd snowflake/infra/storage_integrations
-        terraform init
-        terraform workspace new $ENV || terraform workspace select $ENV
-        terraform plan
-        terraform apply -input=false -auto-approve
