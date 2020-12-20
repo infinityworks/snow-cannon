@@ -347,6 +347,10 @@ This deployment user is designed to be used after the initial setup of S3 bucket
 
 There is also a Snowflake deployment user `<your-project>_CI_DEPLOYMENT`, in `snowflake/rbac/users/programmatic.tf` which will be required to deploy Snowflake resources. The project name will be set after running the `project_setup.py` script as seen [above](./README.md#project-setup--resource-naming).
 
+## Creds loader
+
+To test your CI user and adopt the role locally, you can use the `adopt_ci_user_and_role.sh` file. This requires the user's credentials to be in your `~/.aws/credentials` and have exported the profile to your environment variables.
+
 ## GitHub actions
 
 To keep things simple as a contained project, GitHub actions has been chosen as the CI/CD service to automate deployment of Snowflake resources, and their AWS counterparts. You'll find the test and deployment processes in `.github/workflows/`.
