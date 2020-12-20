@@ -2,8 +2,8 @@ name: 'Deploy stages'
 
 on:
   push:
-    # paths:
-    #   - 'snowflake/infra/stages/**'
+    paths:
+      - 'snowflake/infra/stages/**'
 
 jobs:
   deploy-snowflake-stages:
@@ -12,8 +12,10 @@ jobs:
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_REGION: ${{ secrets.SNOWFLAKE_REGION }}
       SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
       SNOWFLAKE_ROLENAME: SYSADMIN
 
     steps:
@@ -30,15 +32,10 @@ jobs:
         role-duration-seconds: 900
         role-session-name: CI-deployment
 
-    # - name: deploy-stages
-    #   run: |
-    #     cd snowflake/infra/stages
-    #     terraform init
-    #     terraform workspace new $ENV || terraform workspace select $ENV
-    #     terraform plan
-    #     terraform apply -input=false -auto-approve
-
-     # - name: test-snowsql
-     #   run: |
-     #    source ~/.profile
-     #    snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER --query 'CREATE TABLE IF NOT EXISTS ANALYTICS.PUBLIC.TEST_CI (col1 variant)'
+    - name: deploy-stages
+      run: |
+        cd snowflake/infra/stages
+        terraform init
+        terraform workspace new $ENV || terraform workspace select $ENV
+        terraform plan
+        terraform apply -input=false -auto-approve
