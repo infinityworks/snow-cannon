@@ -2,8 +2,7 @@ name: 'Deploy stages'
 
 on:
   push:
-    paths:
-      - 'snowflake/infra/stages/**'
+  pull_request:
 
 jobs:
   deploy-snowflake-stages:

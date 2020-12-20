@@ -11,10 +11,6 @@ jobs:
     container: infinityworks/awscli-terraform-snowflake:1.0.0
     env:
       ENV: dev
-      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-      SNOWFLAKE_ROLENAME: SYSADMIN
 
     steps:
     - name: checkout-code

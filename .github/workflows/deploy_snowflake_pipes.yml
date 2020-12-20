@@ -2,8 +2,8 @@ name: 'Deploy pipes'
 
 on:
   push:
-    # paths:
-    #   - 'snowflake/infra/pipes/**'
+    paths:
+      - 'snowflake/infra/pipes/**'
 
 jobs:
   deploy-snowflake-pipes:
