@@ -2,7 +2,8 @@ name: 'Deploy stages'
 
 on:
   push:
-  pull_request:
+    paths:
+      - 'snowflake/infra/stages/**'
 
 jobs:
   deploy-snowflake-stages:
@@ -11,8 +12,10 @@ jobs:
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_REGION: ${{ secrets.SNOWFLAKE_REGION }}
       SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
       SNOWFLAKE_ROLENAME: SYSADMIN
 
     steps:

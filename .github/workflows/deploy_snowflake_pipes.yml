@@ -12,6 +12,7 @@ jobs:
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_REGION: ${{ secrets.SNOWFLAKE_REGION }}
       SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
       SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
@@ -31,6 +32,19 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         role-duration-seconds: 900
         role-session-name: CI-deployment
+
+    - name: cache-python-requirements
+      uses: actions/cache@v2
+      id: pip-cache
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip
+
+    - name: install-python-requirements
+      run: |
+        pip3 install --requirement requirements.txt
 
     - name: deploy-pipes
       run: |
