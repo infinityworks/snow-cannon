@@ -12,9 +12,11 @@ resource "aws_iam_role" "ci_deployment_role" {
 
 data "aws_iam_policy_document" "ci_assume_role_policy" {
   statement {
-    sid     = "ciAssumeDeploymentRolePolicy"
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+    sid    = "ciAssumeDeploymentRolePolicy"
+    effect = "Allow"
+    actions = ["sts:AssumeRole",
+      "sts:TagSession"
+    ]
     principals {
       type        = "AWS"
       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${aws_iam_user.ci_user.name}"]
