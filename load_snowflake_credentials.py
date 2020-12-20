@@ -62,6 +62,10 @@ def print_terraform_auth_env_vars(credentials):
         print(f"export SNOWFLAKE_PASSWORD={credentials['password']}")
     if "accountname" in credentials:
         print(f"export SNOWFLAKE_ACCOUNT={credentials['accountname']}")
+    if "region" in credentials:
+        print(f"export SNOWFLAKE_REGION={credentials['region']}")
+    if "role" in credentials:
+        print(f"export SNOWFLAKE_ROLE={credentials['role']}")
 
 
 def print_snowsql_auth_env_vars(credentials):

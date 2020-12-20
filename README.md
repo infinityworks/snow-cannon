@@ -3,7 +3,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Getting started](#getting-started)
   - [Dependencies](#dependencies)
   - [Project Setup & Resource naming](#project-setup--resource-naming)
@@ -33,7 +32,9 @@ This repo applies an infrastructure as code approach to deploying Snowflake reso
 Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role.
 
 # Getting started
+
 ## Dependencies
+
 In order to contribute or run this project, you will need:
 
 - [terraform v0.13](https://www.terraform.io/)
@@ -44,6 +45,7 @@ In order to contribute or run this project, you will need:
 - [pre-commit](https://pre-commit.com/)
 
 ## Project Setup & Resource naming
+
 The naming convention for many resources, including the remote state bucket and lock table, incorporate the project name, for example `your-project-remote-state`. To set this variable, run the following Python file and when prompted, enter your chosen project name. Avoid using special or escape characters.
 
     python3 project_setup.py
@@ -53,6 +55,7 @@ The naming convention for many resources, including the remote state bucket and 
 ## Snowflake Account Setup
 
 ### Snowflake grants
+
 As part of account setup, the grant for `create integration` must be assigned to SYSADMIN for the modules to function correctly. By default, only the ACCOUNTADMIN can create `storage integrations` and we wanted to abstract this high powered role away from automated deployment users and so grant integrations to SYSADMIN to handle all infra resources.
 
 To achieve this, run:
@@ -62,9 +65,8 @@ To achieve this, run:
 
 ACCOUNTADMIN should be a break-glass solution and locked away.
 
-
-
 ## Installing SnowSQL
+
 The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
 
     brew cask install snowflake-snowsql
@@ -89,6 +91,7 @@ If you are using multiple Snowflake accounts or users you can create additional 
 
 
 ## Setting your ENV VARS
+
 To deploy Snowflake using Terraform, this project depends on user authentication by environment variables; to simplify this process we load the SnowSQL config credentials using a python script; the two env vars outputted are `SNOWFLAKE_USER` and `SNOWFLAKE_PASSWORD`.
 
 The python script accepts two optional arguments, `profile` and `application`; these determine the Snowflake profile you wish to use and the env vars to export. If the flags are not called, they will default to using your `connections` profile and output both terraform and SnowSQL env vars. **The CLI arguments are case sensitive**. The accepted values for `application` are `terraform`, `snowsql` or `all`, for example:
@@ -168,6 +171,7 @@ Each environment's config can be added to `terraform-config/providers.tf` and th
 The AWS profile must also match the credentials profiles you wish to use.
 
 ### Creating and selecting a workspace
+
 After initialising Terraform you can create and/or select a workspace. When a workspace is created, it is automatically adopted. To keep things simple, edit the following command with your env name and run the following each time:
 
     terraform init && terraform workspace new <env> || terraform workspace select <env>
@@ -176,6 +180,7 @@ After initialising Terraform you can create and/or select a workspace. When a wo
 If the workspace already exists, the follow-up command will select the workspace.
 
 ## Remote state and lock table
+
 To begin we must create a remote state bucket and lock table within an AWS account; this is referenced to keep track of all changes made by Terraform and ensures stateful deployments.
 
 The remote state bucket and lock table's name are comprised of your project name, this can be updated in `./aws/state_resources/s3/environment/dev/environment.tfvars`.
@@ -201,6 +206,7 @@ Check with the aws CLI that `<your-project>-lock-table` now exists:
 Now we have our state infrastructure we can begin Terraforming Snowflake and its AWS counterparts.
 
 ## Provisioning Snowflake resources
+
 Some resources are dependent on others already existing, for example schemas belong to databases, and stages belong to a schema within a database; thus we must deploy resources in a specific order:
 
 1. RBAC
@@ -215,11 +221,13 @@ Some resources are dependent on others already existing, for example schemas bel
 Each directory containing a resource has an associated `main.tf` file which declares the provider; this provider includes the Snowflake account name, region and role which is adopted to create, modify and destroy infra. You must ensure you can adopt the appropriate roles required by Snowflake. With an infra as code approach, this project is designed to be deployed across multiple environments using separate accounts; the separation is controlled through configuration with `environment.tfvars` files (though it is possible to deploy `n` environments in a single account by appending resource names with the env).
 
 ### Modules
+
 Modules are a key element of what makes this project successful, particularly for automating data ingestion from cloud storage. Modules simplify the work flow and reduce maintenance of groups of resources that depend on each other. For example, the pipes-module will dynamically create the supporting infrastructure of an landing table, account integration, AWS iam role, external stage and the pipe itself, as a one-to-one relationship. Each data flow is decoupled and independent from one another.
 
 Beware, when creating modules they can cause deployment and destruction conflicts; for example, independently **granting permissions** on roles to a resource will conflict with other module deployments as the Terraform provider looks for global permissions and finds the difference; having multiple grant objects will conflict with each other as the sql output is no longer a single source of truth when comparing one Terraform block to another. To avoid this, all resource grant statements much be in a single block.
 
 ## Users
+
 To create users navigate to `./Snowflake/rbac/users/` and create a new `.tf` file for each group of users, a recommended approach is to create one file per squad or business area.  Within this file use the provider resource  `snowflake_user` and define the user's preferences:
 
     resource "snowflake_user" "user_JohnSnow" {
@@ -251,6 +259,7 @@ Once this block has been written, run:
 This pattern of initialisation, planning and deployment is repeated across each directory to create different resources.
 
 ## Roles
+
 Roles are created in a similar way to users in `./Snowflake/rbac/roles/`. Each role comes with a grant block which will grant the role created to users or other roles. It is recommended that one role is created per file to maintain separation and ease of organisation.
 
 To persist user changes, for example name or default roles, it is recommended to reference the user's `name` value from the remote state of the user file. This is achieved by the `data` block, `terraform_remote_state`.
@@ -258,6 +267,7 @@ To persist user changes, for example name or default roles, it is recommended to
 **WARNING:** As previously mentioned, grant statements will misbehave if instantiated multiple times to the same object. The provider appears to run a query to find where the grant statement has already been applied and finds the difference to the grant block you are running; this includes removing any granted permissions that were created in the console and not through code using this provider and remote state. It is recommended not to use the resource which grants AccountAdmin, when revoking or destroying it is possible to remove your own role access and lock yourself out.
 
 ## Databases and schemas
+
 The above pattern of declaring a resource, referencing the remote state for any dependencies and granting permissions to it is used in other resource creation, such as databases. At a minimum a role must have `usage` granted to access a database.
 
 It is recommended that databases have their own dedicated `.tf` file which includes it's grant statements. Schemas should be separated by directory for each database created:
@@ -272,17 +282,18 @@ It is recommended that databases have their own dedicated `.tf` file which inclu
             ├── schema2
             └── schema3
 
- ## Creating Snowpipes
- Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. To do the heavy lifting we use modules to abstract all the difficulty and configuration. The Snowpipe module lives in `snowflake/infra/modules/snowpipe-module/` and new pipes are declared in `snowflake/infra/pipes/`. This module creates the landing table, account integration, external stage, iam role, pipe and s3 bucket notification which are required to automate data ingestion. Pipes are decoupled from one another and have their own remote state file, which means you must also update the path and values of `snowflake/infra/pipes/my-new-pipe/environment/backend-config.tfvars` to reflect this. This ensures the pipes and their dependencies are isolated from other pipes.
+## Creating Snowpipes
 
- The pipe module is designed to consume data from either an entire bucket or a key within a bucket. The name of the key of the bucket is used in naming all the supporting resources and the pipe itself, e.g. for the `finance` key, the pipe would be called `FINANCE_DATA_PIPE`. If a bucket does not have a key and you wish to consume from the top level of the bucket, set `has_key = false` though in this case it will still take the name `FINANCE_DATA_PIPE`. The module variables determines the granularity a pipe can consume from and it's naming.
+Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. To do the heavy lifting we use modules to abstract all the difficulty and configuration. The Snowpipe module lives in `snowflake/infra/modules/snowpipe-module/` and new pipes are declared in `snowflake/infra/pipes/`. This module creates the landing table, account integration, external stage, iam role, pipe and s3 bucket notification which are required to automate data ingestion. Pipes are decoupled from one another and have their own remote state file, which means you must also update the path and values of `snowflake/infra/pipes/my-new-pipe/environment/backend-config.tfvars` to reflect this. This ensures the pipes and their dependencies are isolated from other pipes.
 
- The default file format to be consumed is JSON; this can be changed to ingest tabular objects such as CSV files using the following variables:
- - file_format
- - record_delimiter
- - field_delimiter
+The pipe module is designed to consume data from either an entire bucket or a key within a bucket. The name of the key of the bucket is used in naming all the supporting resources and the pipe itself, e.g. for the `finance` key, the pipe would be called `FINANCE_DATA_PIPE`. If a bucket does not have a key and you wish to consume from the top level of the bucket, set `has_key = false` though in this case it will still take the name `FINANCE_DATA_PIPE`. The module variables determines the granularity a pipe can consume from and it's naming.
 
- The following example shows how to customise your pipe requirements, including the file suffix; the suffix can include characters of the filename but is mainly used to declare the filetype to be consumed.
+The default file format to be consumed is JSON; this can be changed to ingest tabular objects such as CSV files using the following variables:
+- file_format
+- record_delimiter
+- field_delimiter
+
+The following example shows how to customise your pipe requirements, including the file suffix; the suffix can include characters of the filename but is mainly used to declare the filetype to be consumed.
 
      module "finance_snowpipe" {
          source           = "../../modules/snowpipe-module/"
@@ -295,7 +306,7 @@ It is recommended that databases have their own dedicated `.tf` file which inclu
          filter_suffix    = ".csv"
      }
 
- For the case of structured data, such as a `.csv` or `.tsv.gz`, you must provide a table definition of the columns and datatype. The structure is:
+For the case of structured data, such as a `.csv` or `.tsv.gz`, you must provide a table definition of the columns and datatype. The structure is:
 
      field,type
      col1,INTEGER
@@ -308,21 +319,44 @@ and is located in the working directory where the pipe is to be created within t
 
  NOTE: During pipe creation, instantiating an iam role is not instantaneous, to get around the pipe looking for a role that is still being created, we use a local-exec statement and shell command to wait 10 seconds.
 
- ### Checking a pipes status
-  Once deployed, check a pipe's status using:
+### Checking a pipes status
+Once deployed, check a pipe's status using:
 
-          SELECT system$pipe_status('database_name.schema_name.pipe_name');
+    SELECT system$pipe_status('database_name.schema_name.pipe_name');
 
 ### Pipe module design
 To make use of the modular pattens, the resources created by them are separated into their own directory and remote state file to isolate them from one another. This allows actions like `terraform destroy` to remove the group of resources that support a pipe or stage without affecting other pipes. This one-to-one relationship increases reliability and depending on s3 key access, enhances security to a more granular level.
 
- ### Pipe dependencies
- The recommended way to deploy a pipe is with the module; that said, it is useful to understand what is going on under-the-hood. The following summaries the steps to create the individual supporting resources:
- - Create a database and schema where an external stage can live.
- - If it does not already exist, create the landing table where data will be ingested into.
- - Next we require an account integration to connect to an external AWS account.
- - Once this has been established we can create the external stage, which is dependent on the account integration and s3 bucket.
- - Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 bucket.
- - Finally, create the Snowpipe. The pipe creates it's own AWS SQS service behind the scenes which Snowflake manages, this is configured to receive event notifications from your s3 bucket when files land and automatically copy them to the landing table.
+### Pipe dependencies
+
+The recommended way to deploy a pipe is with the module; that said, it is useful to understand what is going on under-the-hood. The following summaries the steps to create the individual supporting resources:
+- Create a database and schema where an external stage can live.
+- If it does not already exist, create the landing table where data will be ingested into.
+- Next we require an account integration to connect to an external AWS account.
+- Once this has been established we can create the external stage, which is dependent on the account integration and s3 bucket.
+- Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 bucket.
+- Finally, create the Snowpipe. The pipe creates it's own AWS SQS service behind the scenes which Snowflake manages, this is configured to receive event notifications from your s3 bucket when files land and automatically copy them to the landing table.
 
  Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; you will need to destroy the existing resources that depend on the integration and redeploy them to re-establish the link.
+
+# Automated Deployments
+
+Within the directory `aws/iam/ci-deployment-user/` you will find the Terraform resources required to create a CI deployment user and role to adopt. The user by default does not have any powers but the role allows the user to assume the deployment role and adopt the permissions required to work with the remote state and data lake buckets, DynamoDB lock table and IAM roles and policies. The permissions have largely been restricted to what is needed to create the accompanying resources Snowflake needs for integrations (IAM) and pipes (event notifications).
+
+This deployment user is designed to be used after the initial setup of S3 buckets and DynamoDB table. This user is to be created during account setup.
+
+There is also a Snowflake deployment user `<your-project>_CI_DEPLOYMENT`, in `snowflake/rbac/users/programmatic.tf` which will be required to deploy Snowflake resources. The project name will be set after running the `project_setup.py` script as seen [above](./README.md#project-setup--resource-naming).
+
+## GitHub actions
+
+To keep things simple as a contained project, GitHub actions has been chosen as the CI/CD service to automate deployment of Snowflake resources, and their AWS counterparts. You'll find the test and deployment processes in `.github/workflows/`.
+
+If you choose to use GitHub actions and the CI pipelines included here, you'll need to create the following GitHub secrets for your repo:
+
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_ROLE_TO_ASSUME
+- SNOWFLAKE_ACCOUNT
+- SNOWFLAKE_REGION
+- SNOWFLAKE_USER
+- SNOWFLAKE_PASSWORD
