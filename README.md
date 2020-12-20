@@ -25,6 +25,9 @@
     - [Checking a pipes status](#checking-a-pipes-status)
     - [Pipe module design](#pipe-module-design)
     - [Pipe dependencies](#pipe-dependencies)
+- [Automated Deployments](#automated-deployments)
+  - [Creds loader](#creds-loader)
+  - [GitHub actions](#github-actions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -272,57 +275,83 @@ It is recommended that databases have their own dedicated `.tf` file which inclu
             ├── schema2
             └── schema3
 
- ## Creating Snowpipes
- Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. To do the heavy lifting we use modules to abstract all the difficulty and configuration. The Snowpipe module lives in `snowflake/infra/modules/snowpipe-module/` and new pipes are declared in `snowflake/infra/pipes/`. This module creates the landing table, account integration, external stage, iam role, pipe and s3 bucket notification which are required to automate data ingestion. Pipes are decoupled from one another and have their own remote state file, which means you must also update the path and values of `snowflake/infra/pipes/my-new-pipe/environment/backend-config.tfvars` to reflect this. This ensures the pipes and their dependencies are isolated from other pipes.
+## Creating Snowpipes
+Creating roles, databases and warehouses are easy, creating Snowpipes requires a little finesse. To do the heavy lifting we use modules to abstract all the difficulty and configuration. The Snowpipe module lives in `snowflake/infra/modules/snowpipe-module/` and new pipes are declared in `snowflake/infra/pipes/`. This module creates the landing table, account integration, external stage, iam role, pipe and s3 bucket notification which are required to automate data ingestion. Pipes are decoupled from one another and have their own remote state file, which means you must also update the path and values of `snowflake/infra/pipes/my-new-pipe/environment/backend-config.tfvars` to reflect this. This ensures the pipes and their dependencies are isolated from other pipes.
 
- The pipe module is designed to consume data from either an entire bucket or a key within a bucket. The name of the key of the bucket is used in naming all the supporting resources and the pipe itself, e.g. for the `finance` key, the pipe would be called `FINANCE_DATA_PIPE`. If a bucket does not have a key and you wish to consume from the top level of the bucket, set `has_key = false` though in this case it will still take the name `FINANCE_DATA_PIPE`. The module variables determines the granularity a pipe can consume from and it's naming.
+The pipe module is designed to consume data from either an entire bucket or a key within a bucket. The name of the key of the bucket is used in naming all the supporting resources and the pipe itself, e.g. for the `finance` key, the pipe would be called `FINANCE_DATA_PIPE`. If a bucket does not have a key and you wish to consume from the top level of the bucket, set `has_key = false` though in this case it will still take the name `FINANCE_DATA_PIPE`. The module variables determines the granularity a pipe can consume from and it's naming.
 
- The default file format to be consumed is JSON; this can be changed to ingest tabular objects such as CSV files using the following variables:
+The default file format to be consumed is JSON; this can be changed to ingest tabular objects such as CSV files using the following variables:
  - file_format
  - record_delimiter
  - field_delimiter
 
- The following example shows how to customise your pipe requirements, including the file suffix; the suffix can include characters of the filename but is mainly used to declare the filetype to be consumed.
+The following example shows how to customise your pipe requirements, including the file suffix; the suffix can include characters of the filename but is mainly used to declare the filetype to be consumed.
 
-     module "finance_snowpipe" {
-         source           = "../../modules/snowpipe-module/"
-         s3_bucket_name   = "marketing-analytics"
-         s3_key           = "finance"
-         has_key          = false
-         file_format      = "CSV"
-         field_delimiter  = "\t"
-         record_delimiter = "\n"
-         filter_suffix    = ".csv"
-     }
+    module "finance_snowpipe" {
+        source           = "../../modules/snowpipe-module/"
+        s3_bucket_name   = "marketing-analytics"
+        s3_key           = "finance"
+        has_key          = false
+        file_format      = "CSV"
+        field_delimiter  = "\t"
+        record_delimiter = "\n"
+        filter_suffix    = ".csv"
+    }
 
- For the case of structured data, such as a `.csv` or `.tsv.gz`, you must provide a table definition of the columns and datatype. The structure is:
+For the case of structured data, such as a `.csv` or `.tsv.gz`, you must provide a table definition of the columns and datatype. The structure is:
 
-     field,type
-     col1,INTEGER
-     col2,VARCHAR
-     col3,FLOAT
+    field,type
+    col1,INTEGER
+    col2,VARCHAR
+    col3,FLOAT
 
 and is located in the working directory where the pipe is to be created within the file `table-definition.csv`. Terraform will read this and generate the DDL statement for the landing table. In the case of semi-structures data, like JSON, a single column will be created with the Snowflake `variant` datatype.
 
- All landing tables have a timestamp column to note when the record was ingested by Snowflake.
+All landing tables have a timestamp column to note when the record was ingested by Snowflake.
 
- NOTE: During pipe creation, instantiating an iam role is not instantaneous, to get around the pipe looking for a role that is still being created, we use a local-exec statement and shell command to wait 10 seconds.
+NOTE: During pipe creation, instantiating an iam role is not instantaneous, to get around the pipe looking for a role that is still being created, we use a local-exec statement and shell command to wait 10 seconds.
 
- ### Checking a pipes status
-  Once deployed, check a pipe's status using:
+### Checking a pipes status
+Once deployed, check a pipe's status using:
 
-          SELECT system$pipe_status('database_name.schema_name.pipe_name');
+    SELECT system$pipe_status('database_name.schema_name.pipe_name');
 
 ### Pipe module design
 To make use of the modular pattens, the resources created by them are separated into their own directory and remote state file to isolate them from one another. This allows actions like `terraform destroy` to remove the group of resources that support a pipe or stage without affecting other pipes. This one-to-one relationship increases reliability and depending on s3 key access, enhances security to a more granular level.
 
- ### Pipe dependencies
- The recommended way to deploy a pipe is with the module; that said, it is useful to understand what is going on under-the-hood. The following summaries the steps to create the individual supporting resources:
- - Create a database and schema where an external stage can live.
- - If it does not already exist, create the landing table where data will be ingested into.
- - Next we require an account integration to connect to an external AWS account.
- - Once this has been established we can create the external stage, which is dependent on the account integration and s3 bucket.
- - Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 bucket.
- - Finally, create the Snowpipe. The pipe creates it's own AWS SQS service behind the scenes which Snowflake manages, this is configured to receive event notifications from your s3 bucket when files land and automatically copy them to the landing table.
+### Pipe dependencies
+The recommended way to deploy a pipe is with the module; that said, it is useful to understand what is going on under-the-hood. The following summaries the steps to create the individual supporting resources:
+- Create a database and schema where an external stage can live.
+- If it does not already exist, create the landing table where data will be ingested into.
+- Next we require an account integration to connect to an external AWS account.
+- Once this has been established we can create the external stage, which is dependent on the account integration and s3 bucket.
+- Now Snowflake has set its external ID we can create the IAM role which will allow Snowflake to read from the S3 bucket.
+- Finally, create the Snowpipe. The pipe creates it's own AWS SQS service behind the scenes which Snowflake manages, this is configured to receive event notifications from your s3 bucket when files land and automatically copy them to the landing table.
 
- Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; you will need to destroy the existing resources that depend on the integration and redeploy them to re-establish the link.
+Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; you will need to destroy the existing resources that depend on the integration and redeploy them to re-establish the link.
+
+# Automated Deployments
+
+Within the directory `aws/iam/ci-deployment-user/` you will find the Terraform resources required to create a CI deployment user and role to adopt. The user by default does not have any powers but the role allows the user to assume the deployment role and adopt the permissions required to work with the remote state and data lake buckets, DynamoDB lock table and IAM roles and policies. The permissions have largely been restricted to what is needed to create the accompanying resources Snowflake needs for integrations (IAM) and pipes (event notifications).
+
+This deployment user is designed to be used after the initial setup of S3 buckets and DynamoDB table. This user is to be created during account setup.
+
+There is also a Snowflake deployment user `<your-project>_CI_DEPLOYMENT`, in `snowflake/rbac/users/programmatic.tf` which will be required to deploy Snowflake resources. The project name will be set after running the `project_setup.py` script as seen [above](./README.md#project-setup--resource-naming).
+
+## Creds loader
+
+To test your CI user and adopt the role locally, you can use the `adopt_ci_user_and_role.sh` file. This requires the user's credentials to be in your `~/.aws/credentials` and have exported the profile to your environment variables.
+
+## GitHub actions
+
+To keep things simple as a contained project, GitHub actions has been chosen as the CI/CD service to automate deployment of Snowflake resources, and their AWS counterparts. You'll find the test and deployment processes in `.github/workflows/`.
+
+If you choose to use GitHub actions and the CI pipelines included here, you'll need to create the following GitHub secrets for your repo:
+
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_ROLE_TO_ASSUME
+- SNOWFLAKE_ACCOUNT
+- SNOWFLAKE_REGION
+- SNOWFLAKE_USER
+- SNOWFLAKE_PASSWORD

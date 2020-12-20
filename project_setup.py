@@ -2,8 +2,20 @@ import glob
 import re
 
 
-def replace_project_name(current_project_name="snow-cannon", dirs_to_glob="./**/*.tf"):
-    globbed_files = set(glob.iglob(dirs_to_glob, recursive=True))
+def replace_project_name(
+    current_project_name="snow-cannon", dirs_to_glob=["./**/*.tf", "./**/*.sh"]
+):
+
+    if not isinstance(dirs_to_glob, list):
+        dirs = [dirs_to_glob]
+    else:
+        dirs = dirs_to_glob
+
+    files_globbed = []
+    for files in dirs:
+        files_globbed.extend(glob.iglob(files, recursive=True))
+
+    globbed_files = set(files_globbed)
     ignore_files = set(glob.iglob("./tests/**/*.tf", recursive=True))
     files_to_modify = globbed_files - ignore_files
 
