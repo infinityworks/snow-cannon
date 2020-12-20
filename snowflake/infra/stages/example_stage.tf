@@ -9,3 +9,15 @@ module "stage_example" {
     "s3:PutObject",
   ]
 }
+
+module "stage_example2" {
+  source         = "../../modules/stages-module/"
+  s3_bucket_name = "snow-cannon-data-lake-${local.formatted_env}"
+  s3_path        = "EXAMPLE_STAGE2"
+  database       = "ANALYTICS"
+  schema         = "PUBLIC"
+  iam_permissions = ["s3:GetObject",
+    "s3:GetObjectVersion",
+    "s3:PutObject",
+  ]
+}
