@@ -56,16 +56,15 @@ The naming convention for many resources, including the remote state bucket and 
 ## Snowflake Account Setup
 
 ### Snowflake grants
-As part of account setup, the grant for `create integration` must be assigned to SYSADMIN for the modules to function correctly. By default, only the ACCOUNTADMIN can create `storage integrations` and we wanted to abstract this high powered role away from automated deployment users and so grant integrations to SYSADMIN to handle all infra resources.
+As part of account setup, the grant for `create integration` must be assigned to SYSADMIN for the modules to function correctly. By default, only the ACCOUNTADMIN can create `storage integrations` and we wanted to abstract this high powered role away from automated deployment users and so grant integrations to SYSADMIN to handle all infra resources. Similarly, for SYSADMIN to execute tasks we must also grant that privilege.
 
 To achieve this, run:
 
     USE ROLE ACCOUNTADMIN;
     GRANT CREATE INTEGRATION ON ACCOUNT to ROLE SYSADMIN;
+    GRANT CREATE EXECUTE TASK  ON ACCOUNT to ROLE SYSADMIN;
 
 ACCOUNTADMIN should be a break-glass solution and locked away.
-
-
 
 ## Installing SnowSQL
 The project uses the SnowSQL CLI for resource creation when the Terraform provider lacks the functionality; this includes table creation particularly when deploying Snowpipes. To download SnowSQL cli follow [these instructions](https://docs.snowflake.com/en/user-guide/snowsql-install-config.html#installing-snowsql) or if you have homebrew use:
@@ -329,6 +328,28 @@ The recommended way to deploy a pipe is with the module; that said, it is useful
 - Finally, create the Snowpipe. The pipe creates it's own AWS SQS service behind the scenes which Snowflake manages, this is configured to receive event notifications from your s3 bucket when files land and automatically copy them to the landing table.
 
 Note: If you modify or recreate the account integration, a new `snowflake_external_id` will be generated; you will need to destroy the existing resources that depend on the integration and redeploy them to re-establish the link.
+
+
+## Automating Data Exports With Snowflake Tasks
+
+Snowflake tasks can be used to schedule SQL. Within the modules directory is a task designed to export a table or view's contents to an external stage in S3. To separate warehouse modelling and table logic, the task export module is designed to unload columns from a single source, not to be joined with other tables; this allows the task to only be responsible for the export mechanism.
+
+Below is an example to unload data from the table `ANALYTICS.PUBLIC.TRANSACTIONS` to a stage in S3 at 03:00 each day:
+
+    module "export_table" {
+      source          = "../../modules/tasks-export-module"
+      name            = "EXPORT_TABLE"
+      external_stage  = "S3_STAGE_NAME"
+      export_filename = "data.csv"
+      database        = "ANALYTICS"
+      schema          = "PUBLIC"
+      table           = "TRANSACTIONS"
+      columns         = "*"
+      schedule        = "USING CRON 0 3 * * * UTC"
+      warehouse       = "DEMO_WH"
+      comment         = "Daily export of transaction data"
+      enabled         = true
+    }
 
 # Automated Deployments
 

@@ -1,0 +1,49 @@
+name: 'deploy snowflake rbac'
+
+on:
+  push:
+    paths:
+      - 'snowflake/infra/rbac/**'
+
+jobs:
+  deploy-snowflake-rbac:
+    runs-on: ubuntu-latest
+    container: infinityworks/awscli-terraform-snowflake:1.0.0
+    env:
+      ENV: dev
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_REGION: ${{ secrets.SNOWFLAKE_REGION }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLENAME: SYSADMIN
+
+    steps:
+    - name: checkout-code
+      uses: actions/checkout@v2
+
+    - name: configure-AWS-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-2
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 900
+        role-session-name: CI-deployment
+
+    - name: deploy-users
+      run: |
+        cd snowflake/rbac/users
+        terraform init
+        terraform workspace new $ENV || terraform workspace select $ENV
+        terraform plan
+        terraform apply -input=false -auto-approve
+
+    - name: deploy-roles
+      run: |
+        cd snowflake/rbac/roles
+        terraform init
+        terraform workspace new $ENV || terraform workspace select $ENV
+        terraform plan
+        terraform apply -input=false -auto-approve

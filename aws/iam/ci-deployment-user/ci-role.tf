@@ -44,9 +44,16 @@ data "aws_iam_policy_document" "ci_policy" {
       "iam:DeleteRole",
       "iam:DeleteRolePolicy",
       "iam:DetachRolePolicy",
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
       "iam:GetRolePolicy",
+      "iam:GetRole",
+      "iam:GetUser",
+      "iam:GetUserPolicy",
+      "iam:ListAccessKeys",
       "iam:ListAttachedRolePolicies",
       "iam:ListInstanceProfilesForRole",
+      "iam:ListPolicies",
       "iam:ListRolePolicies",
       "iam:ListRoleTags",
       "iam:PutRolePolicy",
@@ -55,13 +62,6 @@ data "aws_iam_policy_document" "ci_policy" {
       "iam:UpdateAssumeRolePolicy",
       "iam:UpdateRole",
       "iam:UpdateRoleDescription",
-      "iam:ListPolicies",
-      "iam:GetRole",
-      "iam:GetUser",
-      "iam:GetPolicy",
-      "iam:GetPolicyVersion",
-      "iam:GetUserPolicy",
-      "iam:ListAccessKeys"
     ]
   }
 

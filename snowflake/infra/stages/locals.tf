@@ -3,5 +3,5 @@ locals {
 }
 
 locals {
-  formatted_env = lower(module.config.entries.main.env)
+  formatted_env_lower = lower(local.env)
 }
