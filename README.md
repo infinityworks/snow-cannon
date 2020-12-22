@@ -25,6 +25,7 @@
     - [Checking a pipes status](#checking-a-pipes-status)
     - [Pipe module design](#pipe-module-design)
     - [Pipe dependencies](#pipe-dependencies)
+  - [Automating Data Exports With Snowflake Tasks](#automating-data-exports-with-snowflake-tasks)
 - [Automated Deployments](#automated-deployments)
   - [Creds loader](#creds-loader)
   - [GitHub actions](#github-actions)
