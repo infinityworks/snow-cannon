@@ -14,8 +14,8 @@ resource "aws_s3_bucket" "terraform_state" {
 
   tags = {
     Description = "Bucket to store the Terraform remote state files"
-    Environment = local.env
-    Owner       = local.project_name
+    Project     = local.project_name
+    Environment = local.config.main.env
   }
 }
 

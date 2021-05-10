@@ -22,6 +22,9 @@ output "entries" {
       snowflake_region  = local.variables.snowflake_account.region
       snowflake_version = local.environment.providers.snowflake_version
     }
-
+    env_formatted = {
+      lower = local.env_formatted_lower
+      upper = local.env_formatted_upper
+    }
   }
 }

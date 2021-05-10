@@ -1,6 +1,6 @@
 module "transactions_export" {
   source         = "../../modules/stages-module/"
-  s3_bucket_name = "snow-cannon-data-lake-${local.formatted_env_lower}"
+  s3_bucket_name = "snow-cannon-data-lake-${local.config.env_formatted.lower}"
   s3_path        = "transactions-export"
   database       = "ANALYTICS"
   schema         = "PUBLIC"
