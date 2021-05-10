@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "data_lake" {
-  bucket        = "${local.project_name}-data-lake-${local.formatted_env}"
+  bucket        = "${local.project_name}-data-lake-${local.config.env_formatted.lower}"
   force_destroy = true
   acl           = "private"
 
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "data_lake" {
 
   tags = {
     Project     = local.project_name
-    Environment = local.env
+    Environment = local.config.main.env
     Description = "Data ingestion bucket"
   }
 }

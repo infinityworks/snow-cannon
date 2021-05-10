@@ -1,7 +1,7 @@
 locals {
-  env = module.config.entries.main.env
+  config = module.config.entries
 }
 
 locals {
-  formatted_env = lower(module.config.entries.main.env)
+  project_name = module.config.entries.main.project_name
 }

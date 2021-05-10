@@ -1,12 +1,12 @@
 resource "aws_iam_role" "ci_deployment_role" {
-  name                 = "${local.project_name}-ci-deployment-role-${local.formatted_env}"
+  name                 = "${local.project_name}-ci-deployment-role-${local.config.env_formatted.lower}"
   permissions_boundary = var.permissions_boundary
   path                 = var.path
   assume_role_policy   = data.aws_iam_policy_document.ci_assume_role_policy.json
   tags = {
     Project     = local.project_name
-    Environment = local.env
-    Description = "Role for progrommatic user to adopt for CI deployments"
+    Environment = local.config.main.env
+    Description = "Role for Programmatic user to adopt for CI deployments"
   }
 }
 
@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "ci_assume_role_policy" {
 }
 
 resource "aws_iam_role_policy" "ci_deployment_policy" {
-  name   = "${local.project_name}-ci-deployment-role-policy-${local.formatted_env}"
+  name   = "${local.project_name}-ci-deployment-role-policy-${local.config.env_formatted.lower}"
   policy = data.aws_iam_policy_document.ci_policy.json
   role   = aws_iam_role.ci_deployment_role.id
 }
@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "ci_policy" {
   statement {
     sid       = "listBucketData"
     effect    = "Allow"
-    resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.formatted_env}"]
+    resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.config.env_formatted.lower}"]
 
     actions = [
       "s3:ListBucket",
@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "ci_policy" {
   statement {
     sid       = "interractObjectsData"
     effect    = "Allow"
-    resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.formatted_env}/*"]
+    resources = ["arn:aws:s3:::${local.project_name}-data-lake-${local.config.env_formatted.lower}/*"]
 
     actions = [
       "s3:Get*",
