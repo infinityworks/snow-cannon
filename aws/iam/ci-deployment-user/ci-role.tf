@@ -6,7 +6,7 @@ resource "aws_iam_role" "ci_deployment_role" {
   tags = {
     Project     = local.project_name
     Environment = local.env
-    Description = "Role for progrommatic user to adopt for CI deployments"
+    Description = "Role for Programmatic user to adopt for CI deployments"
   }
 }
 

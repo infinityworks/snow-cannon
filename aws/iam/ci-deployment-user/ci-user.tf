@@ -5,7 +5,7 @@ resource "aws_iam_user" "ci_user" {
   tags = {
     Project     = local.project_name
     Environment = local.env
-    Description = "Progrommatic user for CI deployments"
+    Description = "Programmatic user for CI deployments"
   }
 }
 
