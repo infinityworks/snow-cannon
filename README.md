@@ -377,3 +377,9 @@ If you choose to use GitHub actions and the CI pipelines included here, you'll n
 - SNOWFLAKE_REGION
 - SNOWFLAKE_USER
 - SNOWFLAKE_PASSWORD
+
+You will need to grant the CI user the SYSADMIN and SECURITYADMIN roles.
+
+    GRANT ROLE SYSADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
+    GRANT ROLE SECURITYADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
+
