@@ -1,0 +1,8 @@
+enter .*
+	if [ -f $PWD/.awsenv ]; then
+		for E in $( cat .awsenv ) ; do export $E ; done
+	fi
+leave .*
+	if [ -f $OLDPWD/.awsenv ]; then
+		for E in $( cat $OLDPWD/.awsenv | cut -d = -f 1 ) ; do unset $E ; done
+	fi
