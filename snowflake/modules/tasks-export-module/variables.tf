@@ -52,7 +52,7 @@ variable "copy_parameters" {
 }
 
 variable "session_parameters" {
-  type        = map
+  type        = map(any)
   description = "Snowflake session paramaeters"
   default     = { "TIMEZONE" = "Europe/London" }
 }
