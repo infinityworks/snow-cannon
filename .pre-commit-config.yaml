@@ -19,7 +19,7 @@ repos:
       - id: terraform_validate
 
   - repo: https://github.com/ambv/black
-    rev: 19.10b0
+    rev: 22.8.0
     hooks:
     - id: black
       language_version: python3.8
