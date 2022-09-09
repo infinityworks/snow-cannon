@@ -16,7 +16,7 @@ locals {
       }
     }
     providers = {
-      snowflake_version = "0.17.1"
+      snowflake_version = "0.43.0"
       aws_version       = "~> 3.5.0"
     }
   }
