@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'snowflake/infra/pipes/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-pipes:

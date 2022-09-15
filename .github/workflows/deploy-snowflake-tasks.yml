@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'snowflake/infra/tasks/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-tasks:

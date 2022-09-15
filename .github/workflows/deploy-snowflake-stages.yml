@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'snowflake/infra/stages/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-stages:

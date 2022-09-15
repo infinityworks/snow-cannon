@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'snowflake/infra/storage_integrations/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-integrations:

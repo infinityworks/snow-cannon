@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'snowflake/infra/warehouses/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-warehouses:
