@@ -3,7 +3,7 @@ resource "null_resource" "create_snowflake_table" {
   provisioner "local-exec" {
     command = <<EOT
 {
-      snowsql --accountname $SNOWFLAKE_ACCOUNT.$SNOWFLAKE_REGION --username $SNOWFLAKE_USER --query 'CREATE TABLE IF NOT EXISTS ${var.database}.${var.schema}.${local.formatted_s3_path} ${local.formatted_rows}' || \
+      snowsql --accountname $SNOWFLAKE_ACCOUNT.$SNOWFLAKE_REGION --username $SNOWFLAKE_USER --rolename SYSADMIN --query 'CREATE TABLE IF NOT EXISTS ${var.database}.${var.schema}.${local.formatted_s3_path} ${local.formatted_rows}' || \
       (echo 'Make sure $SNOWFLAKE_ACCOUNT, $SNOWFLAKE_REGION and $SNOWFLAKE_USER env vars are set and the snowsql tool is on the path'; exit 1;)
 }
 EOT
