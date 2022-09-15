@@ -37,4 +37,4 @@ def replace_project_name(
 
 
 if __name__ == "__main__":
-    replace_project_name(current_project_name="snow-cannon")
+    replace_project_name()
