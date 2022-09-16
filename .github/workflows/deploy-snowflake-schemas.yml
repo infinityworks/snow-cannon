@@ -4,11 +4,12 @@ on:
   push:
     paths:
       - 'snowflake/infra/schemas/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-schemas:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.0.0
+    container: infinityworks/awscli-terraform-snowflake:1.0.1
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}

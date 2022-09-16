@@ -32,7 +32,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-This repo applies an infrastructure as code approach to deploying Snowflake resources using Terraform. It relies on the [open source provider by the Chan Zuckerberg Initiative](https://github.com/chanzuckerberg/terraform-provider-snowflake) and can create, alter and destroy users, roles and resources in Snowflake.
+This repo applies an infrastructure as code approach to deploying Snowflake resources using Terraform. It relies on the [open source provider by Snowflake Labs](https://github.com/Snowflake-Labs/terraform-provider-snowflake) and can create, alter and destroy users, roles and resources in Snowflake.
 
 Making use of Snowflake's default and recommended roles, this project creates the majority of infrastructure with the `SYSADMIN` role, users and roles are administered by the `SECURITYADMIN` role.
 
@@ -41,10 +41,10 @@ Making use of Snowflake's default and recommended roles, this project creates th
 In order to contribute or run this project, you will need:
 
 - [terraform v0.13](https://www.terraform.io/)
-- [terraform-provider-snowflake v0.17.1](https://github.com/chanzuckerberg/terraform-provider-snowflake)
-- [Python v3.7](https://www.python.org/downloads/release/python-381/)
-- [SnowSQL v1.2](https://docs.snowflake.com/en/user-guide/snowsql.html)
-- [AWS Command Line Interface v2.0.46](https://aws.amazon.com/cli/)
+- [terraform-provider-snowflake v0.43.0](https://github.com/Snowflake-Labs/terraform-provider-snowflake)
+- [Python v3.8](https://www.python.org/downloads/release/python-381/)
+- [SnowSQL v1.2.23](https://docs.snowflake.com/en/user-guide/snowsql.html)
+- [AWS Command Line Interface v2.7.30](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
 ## Project Setup & Resource naming
@@ -162,7 +162,7 @@ Each environment's config can be added to `terraform-config/providers.tf` and th
           }
         }
         providers = {
-          snowflake_version = "0.17.1"
+          snowflake_version = "0.43.0""
           aws_version       = "~> 3.5.0"
         }
       }
@@ -382,4 +382,3 @@ You will need to grant the CI user the SYSADMIN and SECURITYADMIN roles.
 
     GRANT ROLE SYSADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
     GRANT ROLE SECURITYADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
-

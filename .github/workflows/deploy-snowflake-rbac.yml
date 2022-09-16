@@ -3,12 +3,13 @@ name: 'deploy snowflake rbac'
 on:
   push:
     paths:
-      - 'snowflake/infra/rbac/**'
+      - 'snowflake/rbac/**'
+  workflow_dispatch:
 
 jobs:
   deploy-snowflake-rbac:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.0.0
+    container: infinityworks/awscli-terraform-snowflake:1.0.1
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}

@@ -8,7 +8,7 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.0.0
+    container: infinityworks/awscli-terraform-snowflake:1.0.1
     env:
       ENV: dev
 

@@ -6,6 +6,8 @@ def replace_project_name(
     current_project_name="snow-cannon", dirs_to_glob=["./**/*.tf", "./**/*.sh"]
 ):
 
+    print(f"Template project name: {current_project_name}")
+
     if not isinstance(dirs_to_glob, list):
         dirs = [dirs_to_glob]
     else:
@@ -24,7 +26,7 @@ def replace_project_name(
     )
     project_name_replace_specials = re.sub(r"[^a-zA-Z0-9]+", "-", project_name)
 
-    print(f"Project name: {project_name_replace_specials}")
+    print(f"Updated project name: {project_name_replace_specials}")
 
     for filepath in files_to_modify:
         with open(filepath) as file:
@@ -37,4 +39,4 @@ def replace_project_name(
 
 
 if __name__ == "__main__":
-    replace_project_name(current_project_name="snow-cannon")
+    replace_project_name()
