@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.2.8"
+  required_version = ">= 1.3.4"
 
   backend "s3" {
     profile        = "aws-dev"
@@ -13,7 +13,7 @@ terraform {
   required_providers {
     snowflake = {
       source  = "Snowflake-Labs/snowflake"
-      version = "0.43.0"
+      version = "0.50.0"
     }
   }
 }
