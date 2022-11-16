@@ -6,5 +6,5 @@ module "config" {
 provider "aws" {
   profile = module.config.entries.providers.aws_profile
   region  = module.config.entries.providers.aws_region
-  version = "~> 3.5.0"
+  version = "~> 4.39.0"
 }

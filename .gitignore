@@ -2,7 +2,7 @@ NOTES.md
 sample_data/
 snowsql_rt*
 __pycache__
-
+.venv*
 
 # Created by https://www.toptal.com/developers/gitignore/api/terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform

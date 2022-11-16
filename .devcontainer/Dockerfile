@@ -10,7 +10,7 @@ FROM debian:10
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Terraform and tflint versions
-ARG TERRAFORM_VERSION=0.13.5
+ARG TERRAFORM_VERSION=1.3.4
 ARG TFLINT_VERSION=0.15.4
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
