@@ -24,5 +24,3 @@ variable "session_duration" {
   description = "IAM role assume session: mininum is 3600"
   default     = "3600"
 }
-
-

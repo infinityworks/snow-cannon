@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'aws/github_openID_provider/**'
-      
+
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
       ENV: dev
     permissions:
       id-token: write
-      contents: read  
+      contents: read
 
     steps:
     - name: checkout-code

@@ -4,7 +4,7 @@ module "config" {
 }
 
 provider "aws" {
-  region  = module.config.entries.providers.aws_region
+  region = module.config.entries.providers.aws_region
   default_tags {
     tags = {
       Project     = local.project_name
@@ -12,4 +12,3 @@ provider "aws" {
     }
   }
 }
-
