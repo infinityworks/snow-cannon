@@ -5,5 +5,5 @@ output "debug" {
 }
 
 output "analytics_db_name" {
-  value = snowflake_database.db_ANALYTICS.name
+  value = snowflake_database.analytics.name
 }

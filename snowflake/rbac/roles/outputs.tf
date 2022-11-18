@@ -4,10 +4,10 @@ output "debug" {
   }
 }
 
-output "BI_ANALYST_name" {
+output "bi_analyst_name" {
   value = snowflake_role.bi_analyst.name
 }
 
-output "DATA_ANALYST_name" {
+output "data_analyst_name" {
   value = snowflake_role.data_analyst.name
 }
