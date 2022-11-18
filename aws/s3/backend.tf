@@ -9,7 +9,6 @@ terraform {
   }
 
   backend "s3" {
-    profile        = "aws-dev"
     bucket         = "snow-cannon-remote-state"
     dynamodb_table = "snow-cannon-lock-table"
     key            = "aws/s3/terraform.tfstate"
