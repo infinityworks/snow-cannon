@@ -21,17 +21,24 @@ data "aws_iam_policy_document" "ci_assume_role_policy" {
       identifiers = [aws_iam_openid_connect_provider.github_actions_deployment.arn]
     }
     condition {
-      test     = "StringEquals"
+      test     = "StringLike"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:infinityworks/snow-cannon:*"
+      ]
+    }
+    condition {
+      test     = "ForAllValues:StringEquals"
       variable = "token.actions.githubusercontent.com:aud"
       values = [
         "sts.amazonaws.com"
       ]
     }
     condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:sub"
+      test     = "ForAllValues:StringEquals"
+      variable = "token.actions.githubusercontent.com:iss"
       values = [
-        "repo:infinityworks/snow-cannon:*"
+        "https://token.actions.githubusercontent.com"
       ]
     }
   }
