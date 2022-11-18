@@ -64,6 +64,7 @@ data "aws_iam_policy_document" "ci_policy" {
       "iam:DeleteRole",
       "iam:DeleteRolePolicy",
       "iam:DetachRolePolicy",
+      "iam:GetOpenIDConnectProvider",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:GetRolePolicy",
