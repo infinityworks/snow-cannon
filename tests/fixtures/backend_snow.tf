@@ -2,7 +2,6 @@ terraform {
   required_version = ">= 1.3.4"
 
   backend "s3" {
-    profile        = "aws-dev"
     bucket         = "snow-cannon-remote-state"
     dynamodb_table = "snow-cannon-lock-table"
     key            = "snowflake/infra/warehouses/terraform.tfstate"
