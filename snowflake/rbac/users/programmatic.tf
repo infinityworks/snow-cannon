@@ -5,4 +5,7 @@ resource "snowflake_user" "user_ci_deployment" {
   password             = "replace"
   must_change_password = "true"
   comment              = "CI Deployment user for infra & rbac"
+  lifecycle {
+    ignore_changes = [name]
+  }
 }

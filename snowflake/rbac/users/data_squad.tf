@@ -1,6 +1,6 @@
-resource "snowflake_user" "user_ANALYST" {
-  name                 = "ANALYST"
-  login_name           = "ANALYST"
+resource "snowflake_user" "analyst" {
+  name                 = "${local.project_name_upper}_ANALYST"
+  login_name           = "${local.project_name_upper}_ANALYST"
   default_role         = "PUBLIC"
   password             = "replace"
   must_change_password = "true"

@@ -2,7 +2,6 @@ terraform {
   required_version = ">= 1.3.4"
 
   backend "s3" {
-    profile        = "aws-dev"
     bucket         = "snow-cannon-remote-state"
     dynamodb_table = "snow-cannon-lock-table"
     key            = "snowflake/rbac/roles/terraform.tfstate"
@@ -11,6 +10,10 @@ terraform {
   }
 
   required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "4.39.0"
+    }
     snowflake = {
       source  = "Snowflake-Labs/snowflake"
       version = "0.50.0"
