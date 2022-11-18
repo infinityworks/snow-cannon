@@ -1,0 +1,37 @@
+name: 'deploy GitHub OpenID integration'
+
+on:
+  push:
+    paths:
+      - 'aws/github_openID_provider/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-github-openID-integration:
+    runs-on: ubuntu-latest
+    container: infinityworks/awscli-terraform-snowflake:1.0.1
+    env:
+      ENV: dev
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: checkout-code
+      uses: actions/checkout@v3
+
+    - name: configure-aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/snow-cannon-ci-deployment-role-dev
+        role-duration-seconds: 900
+        role-session-name: CI-deployment
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: deploy-openID-integration
+      run: |
+        cd aws/github_openID_provider
+        terraform init
+        terraform workspace new $ENV || terraform workspace select $ENV
+        terraform plan
+        terraform apply -input=false -auto-approve
