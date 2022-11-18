@@ -10,7 +10,5 @@ provider "snowflake" {
 }
 
 provider "aws" {
-  profile = module.config.entries.providers.aws_profile
-  region  = module.config.entries.providers.aws_region
-  version = "~> 4.39.0"
+  region = module.config.entries.providers.aws_region
 }

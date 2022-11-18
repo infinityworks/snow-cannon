@@ -9,7 +9,10 @@ on:
 jobs:
   deploy-snowflake-pipes:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.0.1
+    container: adewberryiw/awscli-terraform-snowflake:1.1.0
+    permissions:
+      id-token: write
+      contents: read
     env:
       ENV: dev
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
@@ -23,15 +26,13 @@ jobs:
     - name: checkout-code
       uses: actions/checkout@v2
 
-    - name: configure-AWS-credentials
+    - name: configure-aws-credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-2
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        role-duration-seconds: 900
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/snow-cannon-ci-deployment-role-dev
         role-session-name: CI-deployment
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-duration-seconds: 900
 
     - name: cache-python-requirements
       uses: actions/cache@v2
