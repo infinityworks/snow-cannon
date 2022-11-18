@@ -40,11 +40,11 @@ Making use of Snowflake's default and recommended roles, this project creates th
 ## Dependencies
 In order to contribute or run this project, you will need:
 
-- [terraform v0.13](https://www.terraform.io/)
-- [terraform-provider-snowflake v0.43.0](https://github.com/Snowflake-Labs/terraform-provider-snowflake)
-- [Python v3.8](https://www.python.org/downloads/release/python-381/)
+- [terraform v1.3.4](https://www.terraform.io/)
+- [terraform-provider-snowflake v0.50.0](https://github.com/Snowflake-Labs/terraform-provider-snowflake)
+- [Python v3.10](https://www.python.org/downloads/)
 - [SnowSQL v1.2.23](https://docs.snowflake.com/en/user-guide/snowsql.html)
-- [AWS Command Line Interface v2.7.30](https://aws.amazon.com/cli/)
+- [AWS Command Line Interface v2.8.12](https://aws.amazon.com/cli/)
 - [pre-commit](https://pre-commit.com/)
 
 ## Project Setup & Resource naming
