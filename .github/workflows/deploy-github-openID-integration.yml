@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'aws/github_openID_provider/**'
-
   workflow_dispatch:
 
 jobs:
@@ -24,7 +23,7 @@ jobs:
     - name: configure-aws-credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/snow-cannon-ci-deployment-role-dev
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/snow-cannon-ci-deployment-role-dev
         role-duration-seconds: 900
         role-session-name: CI-deployment
         aws-region: ${{ secrets.AWS_REGION }}
