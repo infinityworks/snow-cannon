@@ -4,6 +4,6 @@ output "debug" {
   }
 }
 
-output "user_ANALYST_name" {
-  value = snowflake_user.user_ANALYST.name
+output "user_analyst_name" {
+  value = snowflake_user.analyst.name
 }
