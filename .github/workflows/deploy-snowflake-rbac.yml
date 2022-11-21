@@ -9,7 +9,7 @@ on:
 jobs:
   deploy-snowflake-rbac:
     runs-on: ubuntu-latest
-    container: adewberryiw/awscli-terraform-snowflake:1.1.0
+    container: infinityworks/awscli-terraform-snowflake:1.1.0
     permissions:
       id-token: write
       contents: read
