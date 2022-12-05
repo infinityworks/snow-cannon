@@ -5,10 +5,12 @@ on:
     paths:
       - 'project_setup.py'
       - 'tests/**'
+      - './.github/workflows/integration-tests.yml'
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.1.0
+    container: ghcr.io/infinityworks/awscli-terraform-snowflake:1.1.0
     env:
       ENV: dev
 
