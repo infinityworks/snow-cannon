@@ -9,7 +9,7 @@ on:
 jobs:
   deploy-github-openID-integration:
     runs-on: ubuntu-latest
-    container: infinityworks/awscli-terraform-snowflake:1.1.0
+    container: ghcr.io/infinityworks/awscli-terraform-snowflake:1.1.0
     env:
       ENV: dev
     permissions:
