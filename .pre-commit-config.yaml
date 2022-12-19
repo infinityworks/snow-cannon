@@ -15,7 +15,6 @@ repos:
     rev: v1.17.0
     hooks:
       - id: terraform_fmt
-      - id: terraform_docs
       - id: terraform_validate
 
   - repo: https://github.com/ambv/black
