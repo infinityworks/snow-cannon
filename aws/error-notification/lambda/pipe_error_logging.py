@@ -1,10 +1,11 @@
 from boto3 import client
 
-# from aws_lambda_powertools import Tracer, Logger
 from json import dumps, loads
 from cloudwatch_client import CloudWatchObservability
 from snowpipe_observability import SnowPipeObservabilityFormatting
 import logging
+
+# from aws_lambda_powertools import Tracer, Logger
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger()
@@ -18,12 +19,15 @@ log.setLevel(logging.INFO)
 def handler(event: None, context: None):
     log.info(f"event: {dumps(event, indent=4)}")
 
-    snowpipe_event = loads(event.get("Records")[0].get("body"))
-    log.info(f"snowpipe_event: {dumps(snowpipe_event, indent=4)}")
+    snowpipe_event = SnowPipeObservabilityFormatting(event)
+    snowpipe_error_message = snowpipe_event.message()
+    log.info(f"snowpipe_event: {dumps(snowpipe_error_message, indent=4)}")
 
     logs_client = client("logs")
     cloudwatch_client = client("cloudwatch")
-    cloudwatch = CloudWatchObservability(logs_client, cloudwatch_client, snowpipe_event)
+    cloudwatch = CloudWatchObservability(
+        logs_client, cloudwatch_client, snowpipe_error_message
+    )
 
     parameters = cloudwatch.create_parameters_from_sns_topic()
     log.info(f"parameters: {parameters}")
@@ -31,9 +35,7 @@ def handler(event: None, context: None):
     response = cloudwatch.create_error_log_group(parameters)
     log.info(f"create_error_log_group: {response}")
 
-    snowpipe_error_map = SnowPipeObservabilityFormatting(
-        snowpipe_event
-    ).create_error_map_from_event()
+    snowpipe_error_map = snowpipe_event.create_error_map_from_event()
 
     log.info(f"snowpipe_error_map: {snowpipe_error_map}")
 
@@ -56,7 +58,6 @@ def handler(event: None, context: None):
 
     response = cloudwatch.put_metric(parameters, snowpipe_error_map)
     log.info(f"put_metric: {response}")
-    # # tracer.put_annotation(key="PublishNotification", value="SUCCESS")
 
     return
 
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     from pathlib import Path
     from json import load
 
-    event_file = Path("./tests/event.json")
+    event_file = Path("./tests/fixtures/event.json")
     with open(event_file) as file:
         event = load(file)
     handler(event, context=None)

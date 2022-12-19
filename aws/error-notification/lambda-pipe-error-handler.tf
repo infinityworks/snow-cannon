@@ -3,7 +3,7 @@ resource "aws_lambda_function" "pipe_error_handler" {
   source_code_hash = data.archive_file.pipe_error_handler.output_base64sha256
   function_name    = "${local.project_name}-snowpipe-error-handler-to-cloudwatch"
   role             = aws_iam_role.invoke_error_notification_lambda.arn
-  handler          = "pipe-error.handler"
+  handler          = "pipe_error_logging.handler"
   runtime          = "python3.9"
 }
 

@@ -10,19 +10,23 @@ class SnowPipeObservabilityFormatting:
     def __init__(self, event):
         self.event = event
 
+    def message(self):
+        return loads(self.event.get("Records")[0].get("body"))
+
     def create_error_map_from_event(self):
-        timestamp = self.event.get("Timestamp")
-        print(timestamp)
+        error_message = self.message()
+        timestamp = error_message.get("Timestamp")
         epoch_timestamp_in_milliseconds = (
             self.convert_timestamp_to_epoch_time_in_milliseconds(timestamp)
         )
-        message = loads(self.event.get("Message"))
+        topic = error_message.get("TopicArn")
+        message = loads(error_message.get("Message"))
         error_type = message.get("messageType")
-        topic = self.event.get("TopicArn")
         pipe_name = message.get("pipeName")
         table_name = message.get("tableName")
         source = message.get("stageLocation")
         message = message.get("messages")
+
         snowpipe_error_map = {
             "error_type": error_type,
             "topic": topic,
