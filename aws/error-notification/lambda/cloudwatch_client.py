@@ -1,21 +1,10 @@
-import logging
-from json import loads, dumps
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+from json import dumps
 
 
 class CloudWatchObservability:
-    def __init__(self, logs_client, cloudwatch_client, event):
+    def __init__(self, logs_client, cloudwatch_client):
         self.logs_client = logs_client
         self.cloudwatch_client = cloudwatch_client
-        self.event = event
-
-    def create_parameters_from_sns_topic(self):
-        cloudwatch_parameters = {
-            "logGroupName": f"{self.event.get('TopicArn').split(':')[-1]}",
-        }
-        return cloudwatch_parameters
 
     def create_error_log_group(self, parameters):
         try:
@@ -65,21 +54,20 @@ class CloudWatchObservability:
             if error_code != "DataAlreadyAcceptedException":
                 raise exception
 
-    def put_metric(self, parameters, resource_error_map):
-        pipe_name_in_error = resource_error_map.get("facts").get("pipe_name")
+    def put_metric(self, parameters, resource_in_error, namespace, metric_name):
         response = self.cloudwatch_client.put_metric_data(
-            Namespace="snowpipe-alerts",
+            Namespace=namespace,
             MetricData=[
                 {
-                    "MetricName": "snowpipe-ingestion-error-channel",
+                    "MetricName": metric_name,
                     "Dimensions": [
                         {
                             "Name": "logGroupName",
                             "Value": parameters.get("logGroupName"),
                         },
                         {
-                            "Name": "pipe-name",
-                            "Value": pipe_name_in_error,
+                            "Name": f"{resource_in_error.get('resource_type')}-name",
+                            "Value": resource_in_error.get("name"),
                         },
                         {
                             "Name": "error-type/logStreamName",

@@ -2,7 +2,7 @@ from boto3 import client
 
 from json import dumps, loads
 from cloudwatch_client import CloudWatchObservability
-from snowpipe_observability import SnowPipeObservabilityFormatting
+from snowpipe_event_formatting import SnowPipeEventHandler
 import logging
 
 # from aws_lambda_powertools import Tracer, Logger
@@ -19,23 +19,21 @@ log.setLevel(logging.INFO)
 def handler(event: None, context: None):
     log.info(f"event: {dumps(event, indent=4)}")
 
-    snowpipe_event = SnowPipeObservabilityFormatting(event)
-    snowpipe_error_message = snowpipe_event.message()
-    log.info(f"snowpipe_event: {dumps(snowpipe_error_message, indent=4)}")
-
     logs_client = client("logs")
     cloudwatch_client = client("cloudwatch")
-    cloudwatch = CloudWatchObservability(
-        logs_client, cloudwatch_client, snowpipe_error_message
-    )
+    cloudwatch = CloudWatchObservability(logs_client, cloudwatch_client)
 
-    parameters = cloudwatch.create_parameters_from_sns_topic()
+    snowpipe_event_handler = SnowPipeEventHandler(event)
+    snowpipe_error_message = snowpipe_event_handler.message()
+    log.info(f"snowpipe_event: {dumps(snowpipe_error_message, indent=4)}")
+
+    parameters = snowpipe_event_handler.create_parameters_from_sns_topic()
     log.info(f"parameters: {parameters}")
 
     response = cloudwatch.create_error_log_group(parameters)
     log.info(f"create_error_log_group: {response}")
 
-    snowpipe_error_map = snowpipe_event.create_error_map_from_event()
+    snowpipe_error_map = snowpipe_event_handler.create_error_map_from_event()
 
     log.info(f"snowpipe_error_map: {snowpipe_error_map}")
 
@@ -55,8 +53,17 @@ def handler(event: None, context: None):
         resource_error_map=snowpipe_error_map,
     )
     log.info(f"put_error_log_event: {response}")
+    pipe_attributes = {
+        "name": snowpipe_error_map.get("facts").get("pipe_name"),
+        "resource_type": "pipe",
+    }
 
-    response = cloudwatch.put_metric(parameters, snowpipe_error_map)
+    response = cloudwatch.put_metric(
+        parameters=parameters,
+        resource_in_error=pipe_attributes,
+        namespace="snowpipe-alerts",
+        metric_name="snowpipe-ingestion-error-channel",
+    )
     log.info(f"put_metric: {response}")
 
     return

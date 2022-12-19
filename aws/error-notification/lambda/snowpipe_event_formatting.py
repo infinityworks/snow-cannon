@@ -1,20 +1,23 @@
-import logging
 from json import loads
 from datetime import datetime
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
-
-class SnowPipeObservabilityFormatting:
+class SnowPipeEventHandler:
     def __init__(self, event):
         self.event = event
 
     def message(self):
         return loads(self.event.get("Records")[0].get("body"))
 
+    def create_parameters_from_sns_topic(self):
+        cloudwatch_parameters = {
+            "logGroupName": f"{self.message().get('TopicArn').split(':')[-1]}",
+        }
+        return cloudwatch_parameters
+
     def create_error_map_from_event(self):
         error_message = self.message()
+
         timestamp = error_message.get("Timestamp")
         epoch_timestamp_in_milliseconds = (
             self.convert_timestamp_to_epoch_time_in_milliseconds(timestamp)
