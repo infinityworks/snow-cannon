@@ -3,6 +3,7 @@ from boto3 import client
 # from aws_lambda_powertools import Tracer, Logger
 from json import dumps, loads
 from cloudwatch_client import CloudWatchObservability
+from snowpipe_observability import SnowPipeObservabilityFormatting
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -30,7 +31,10 @@ def handler(event: None, context: None):
     response = cloudwatch.create_error_log_group(parameters)
     log.info(f"create_error_log_group: {response}")
 
-    snowpipe_error_map = cloudwatch.create_error_map_from_event()
+    snowpipe_error_map = SnowPipeObservabilityFormatting(
+        snowpipe_event
+    ).create_error_map_from_event()
+
     log.info(f"snowpipe_error_map: {snowpipe_error_map}")
 
     log_stream_name = snowpipe_error_map.get("error_type")
@@ -46,7 +50,7 @@ def handler(event: None, context: None):
 
     response = cloudwatch.put_error_log_event(
         parameters=parameters,
-        snowpipe_error_map=snowpipe_error_map,
+        resource_error_map=snowpipe_error_map,
     )
     log.info(f"put_error_log_event: {response}")
 
