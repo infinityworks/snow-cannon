@@ -3,7 +3,11 @@ sample_data/
 snowsql_rt*
 __pycache__
 .venv*
+<<<<<<< HEAD
 */lambda.zip
+=======
+aws/error-notification/lambda.zip
+>>>>>>> ae29e7b (build error notification channel (#95))
 # Created by https://www.toptal.com/developers/gitignore/api/terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform
 
