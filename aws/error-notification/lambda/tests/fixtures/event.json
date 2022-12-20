@@ -1,0 +1,20 @@
+{
+  "Records": [
+      {
+          "messageId": "a48a2587-c3da-429e-a023-41a3e367cd7e",
+          "receiptHandle": "AQEBq/Ztb8jpE0kqaQBgGznrrnZrqb8FRCTJURyH8Zpk3y5k9MZ2uyHyNF47zGHQvEdngEW46bBfaFl6nANXbeh/EOsP9EDHCOCPdHKdIo1s7yB+6FCXIC3XL3nI460xPIZivBWD/IIzAjQ7sEAD8AH6fwNshBidR6pUXob4JlBtMedIGabzS+upx3OxnspbOITq0SII0IPYgbzg98SV1leTJHlMgaNMfy9LLQsMduqX4Lri/tTR0pasFhZ+GtRZK6sW9ozPKjL3ROY1xwC/u9U6cz87SHBO/vK9BmR7/uX1bHWLPBAhC/E2E1TVF2vpthBLvtbeogITcZyKrfQdTrm/r8e01CzX7Qa+egIXloOV53s1NOhdrmyFmE8hzSHSC6f/aUEe42fiJZ1t1bKcFqBB0FNeu3vOUJszeOi5oGb7dQo=",
+          "body": "{\n  \"Type\" : \"Notification\",\n  \"MessageId\" : \"be4e7ece-ee09-5166-be69-22d861767ea6\",\n  \"TopicArn\" : \"arn:aws:sns:eu-west-2:054663422011:snowpipe-error-notification-channel\",\n  \"Message\" : \"{\\\"version\\\":\\\"1.0\\\",\\\"messageId\\\":\\\"9ceebea9-bf00-4fc9-8972-49945a79b930\\\",\\\"messageType\\\":\\\"INGEST_FAILED_FILE\\\",\\\"timestamp\\\":\\\"2022-12-16T15:22:24.902Z\\\",\\\"accountName\\\":\\\"INFINITYWORKSPARTNER\\\",\\\"pipeName\\\":\\\"ANALYTICS.PUBLIC.CUSTOMERS_DATA_PIPE\\\",\\\"tableName\\\":\\\"ANALYTICS.PUBLIC.CUSTOMERS\\\",\\\"stageLocation\\\":\\\"s3://snow-cannon-data-lake-dev/customers/\\\",\\\"messages\\\":[{\\\"fileName\\\":\\\"test19.csv\\\",\\\"firstError\\\":\\\"Numeric value 'field,type' is not recognized\\\"}]}\",\n  \"Timestamp\" : \"2022-12-16T15:22:39.428Z\",\n  \"SignatureVersion\" : \"1\",\n  \"Signature\" : \"icFt2nhOFu47oDyOFGKFxLE5TALtu8tWNx5VldsqtnMSSlqhA/m/NfVPpbefRvy6S3dA8WnEbqSNoaVgUyWndxDkbYaIHJBWMmLHHNurqhxzfmS78UmU1SANKqlfVLRnt6PhstPV13ijFiv17/sRBWivL2+i5vhaE/uXbol+Cz5MzI1mSVVmCGRcsKgTNv1A8y5AeVCLOuEACVpQBkQUxjvAngV+SWqCEx6q1WSBlVIl2bSSc70U/yI5RJQ9JLz3ohWW9uSt9YclPwWZpaVsFJyDaoEQfIIeOw76bHk5anAgMnJE5rX08tyB05yvaWRiaCo08DTdmr4xOrWSqT6b5A==\",\n  \"SigningCertURL\" : \"https://sns.eu-west-2.amazonaws.com/SimpleNotificationService-56e67fcb41f6fec09b0196692625d385.pem\",\n  \"UnsubscribeURL\" : \"https://sns.eu-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-2:054663422011:snowpipe-error-notification-channel:6ccf7374-c844-4a95-9aec-a30e581479d7\"\n}",
+          "attributes": {
+              "ApproximateReceiveCount": "1",
+              "SentTimestamp": "1671204159539",
+              "SenderId": "AIDAIVEA3AGEU7NF6DRAG",
+              "ApproximateFirstReceiveTimestamp": "1671204159540"
+          },
+          "messageAttributes": {},
+          "md5OfBody": "000743076d4d2016e1161833bf2e0dc6",
+          "eventSource": "aws:sqs",
+          "eventSourceARN": "arn:aws:sqs:eu-west-2:054663422011:snow-cannon-pipe-error-notifications",
+          "awsRegion": "eu-west-2"
+      }
+  ]
+}
