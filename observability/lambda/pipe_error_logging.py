@@ -1,5 +1,4 @@
 from boto3 import client
-
 from json import dumps, loads
 from cloudwatch_client import CloudWatchObservability
 from snowpipe_event_formatting import SnowPipeEventHandler

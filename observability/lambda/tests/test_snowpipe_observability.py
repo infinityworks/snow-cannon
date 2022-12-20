@@ -12,7 +12,7 @@ def event():
     return test_event
 
 
-class TestSnowPipeObservabilityFormatting:
+class TestSnowPipeEventHandler:
     @pytest.fixture(autouse=True)
     def _snowpipe_observability(self, event):
         self._event_handler = SnowPipeEventHandler(event)
@@ -21,7 +21,7 @@ class TestSnowPipeObservabilityFormatting:
         error_map = self._event_handler.create_error_map_from_event()
         assert error_map == {
             "error_type": "INGEST_FAILED_FILE",
-            "topic": "arn:aws:sns:eu-west-2:054663422011:snowpipe-error-notification-channel",
+            "topic": "arn:aws:sns:eu-west-2:xxxxxx:snowpipe-error-notification-channel",
             "timestamp": 1671204159428,
             "facts": {
                 "pipe_name": "ANALYTICS.PUBLIC.CUSTOMERS_DATA_PIPE",
