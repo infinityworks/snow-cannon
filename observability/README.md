@@ -24,3 +24,19 @@ This will use the `table-definition.csv` to create the landing table in this dir
 To upload the test file from the CLI:
 
     aws s3 cp test.csv s3://[your-test-bucket]/[s3-path]/test.csv
+
+
+To see the delivery failure in snowflake, you can run the following query as `ACCOUNTADMIN`:
+
+    select *
+    from "SNOWFLAKE"."ACCOUNT_USAGE"."COPY_HISTORY"
+    where file_name like 'test%'
+    order by FILE_NAME DESC;
+
+You should find the log group under:
+
+    AWS -> CloudWatch -> Log groups -> snowpipe-error-notification-channel
+
+and metrics at:
+
+    AWS -> CloudWatch ->  Metrics -> snowpipe-alerts
