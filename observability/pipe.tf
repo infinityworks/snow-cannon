@@ -1,5 +1,5 @@
 module "test_pipe_to_fail" {
-  source            = "../../snowflake/modules/snowpipe-module/"
+  source            = "../snowflake/modules/snowpipe-module/"
   s3_bucket_name    = "snow-cannon-data-lake-${local.config.env_formatted.lower}"
   s3_path           = "customers"
   database          = "ANALYTICS"

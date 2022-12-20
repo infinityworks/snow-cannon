@@ -15,7 +15,7 @@ terraform {
   backend "s3" {
     bucket         = "snow-cannon-remote-state"
     dynamodb_table = "snow-cannon-lock-table"
-    key            = "aws/sns/terraform.tfstate"
+    key            = "observability/terraform.tfstate"
     region         = "eu-west-2"
     encrypt        = true
   }
