@@ -29,6 +29,8 @@
 - [Automated Deployments](#automated-deployments)
   - [Credentials loader](#credentials-loader)
   - [GitHub actions](#github-actions)
+    - [AWS CI Authentication](#aws-ci-authentication)
+- [Observability](#observability)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -394,9 +396,6 @@ To keep things simple as a contained project, GitHub actions has been chosen as 
 
 If you choose to use GitHub actions and the CI pipelines included here, you'll need to create the following GitHub secrets for your repo:
 
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS_KEY
-- AWS_ROLE_TO_ASSUME
 - SNOWFLAKE_ACCOUNT
 - SNOWFLAKE_REGION
 - SNOWFLAKE_USER
@@ -406,3 +405,10 @@ You will need to grant the CI user the SYSADMIN and SECURITYADMIN roles.
 
     GRANT ROLE SYSADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
     GRANT ROLE SECURITYADMIN TO USER SNOW_CANNON_CI_DEPLOYMENT;
+
+### AWS CI Authentication
+
+Authentication to AWS is handled by a GitHub openID provider integration found in `./aws/github_openID_provider`. This allows GitHub to assume your deployment role and pass short lived credentials which expire after the session has completed.
+
+# Observability
+To understand when the event driven data movement via snowpipes fails, this project includes an observability module which creates all the necessary resources to publish pipe failures to Cloudwatch Logs and create a Metric, from here you can create alarms and down stream notifications. 

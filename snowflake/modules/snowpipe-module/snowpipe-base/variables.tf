@@ -71,3 +71,9 @@ variable "validate_utf8" {
   default     = true
   description = "validates utf8 encoding of file"
 }
+
+variable "error_integration" {
+  type        = string
+  default     = "SNOWPIPE_ERROR_CHANNEL"
+  description = "validates utf8 encoding of file"
+}

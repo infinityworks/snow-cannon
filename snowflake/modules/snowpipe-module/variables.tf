@@ -70,3 +70,8 @@ variable "validate_utf8" {
   default     = true
   description = "validates utf8 encoding of file"
 }
+
+variable "error_integration" {
+  type        = string
+  description = "validates utf8 encoding of file"
+}
